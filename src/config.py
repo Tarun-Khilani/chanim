@@ -1,0 +1,31 @@
+from src.enums import ChartType, LLMType, GroqModel, OpenaiModel  # noqa: F401
+from src.highchart_schemas import HCHTMLTemplate, HCSchemas
+
+
+class Config:
+    DEFAULT_TEMPERATURE: float = 0.0
+    DEFAULT_LLM_PROVIDER = LLMType.GROQ
+    DEFAULT_LLM = GroqModel.LLAMA3_70B
+
+
+CHART_TYPE_MAPPING = {
+    ChartType.BAR: HCSchemas.BAR_SCHEMA,
+    ChartType.COLUMN: HCSchemas.COLUMN_SCHEMA,
+    ChartType.PIE: HCSchemas.PIE_SCHEMA,
+    ChartType.STACKED_BAR: HCSchemas.STACKED_BAR_SCHEMA,
+    ChartType.STACKED_COLUMN: HCSchemas.STACKED_COLUMN_SCHEMA,
+    ChartType.GROUPED_COLUMN: HCSchemas.GROUPED_COLUMN_SCHEMA,
+    ChartType.GROUPED_BAR: HCSchemas.GROUPED_BAR_SCHEMA,
+    ChartType.HEATMAP: HCSchemas.HEATMAP_SCHEMA,
+}
+
+CHART_TEMPLATE_MAPPING = {
+    ChartType.BAR: HCHTMLTemplate.BAR_HTML_TEMPLATE,
+    ChartType.COLUMN: HCHTMLTemplate.COLUMN_HTML_TEMPLATE,
+    ChartType.HEATMAP: HCHTMLTemplate.HEATMAP_HTML_TEMPLATE,
+    ChartType.PIE: HCHTMLTemplate.PIE_HTML_TEMPLATE,
+    ChartType.STACKED_BAR: HCHTMLTemplate.STACKED_BAR_HTML_TEMPLATE,
+    ChartType.STACKED_COLUMN: HCHTMLTemplate.STACKED_COLUMN_HTML_TEMPLATE,
+    ChartType.GROUPED_COLUMN: HCHTMLTemplate.GROUPED_COLUMN_HTML_TEMPLATE,
+    ChartType.GROUPED_BAR: HCHTMLTemplate.GROUPED_BAR_HTML_TEMPLATE,
+}
