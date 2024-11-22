@@ -338,7 +338,7 @@ class HCHTMLTemplate:
                 bar: {
                 dataLabels: {
                     enabled: true,
-                    format: '{y}%',
+                    format: '{y}',
                     style: {
                         fontFamily: 'Rubik',
                         fontSize: '14px'
@@ -348,7 +348,7 @@ class HCHTMLTemplate:
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -436,7 +436,7 @@ class HCHTMLTemplate:
                 column: {
                 dataLabels: {
                     enabled: true,
-                    format: '{y}%',
+                    format: '{y}',
                     style: {
                         fontFamily: 'Rubik',
                         fontSize: '14px'
@@ -446,7 +446,7 @@ class HCHTMLTemplate:
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -533,12 +533,12 @@ class HCHTMLTemplate:
                     grouping: true,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y}%',
+                        format: '{point.y}',
                     }
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -627,12 +627,12 @@ class HCHTMLTemplate:
                     grouping: true,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y}%',
+                        format: '{point.y}',
                     }
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -697,14 +697,14 @@ class HCHTMLTemplate:
                 pie: {
                     dataLabels: {
                         enabled: true,
-                        format: '{point.name}: {point.y}%'
+                        format: '{point.name}: {point.y}'
                     },
                     colors: brandColors,
                     showInLegend: true
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{point.color}">\u25CF</span> {point.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> {point.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -789,12 +789,12 @@ class HCHTMLTemplate:
                     stacking: 'normal',
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y}%'
+                        format: '{point.y}'
                     }
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
@@ -878,12 +878,12 @@ class HCHTMLTemplate:
                     stacking: 'normal',
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y}%'
+                        format: '{point.y}'
                     }
                 }
             },
             tooltip: {
-                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}%</b><br/>'
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
             },
             legend: {
                 enabled: true,
