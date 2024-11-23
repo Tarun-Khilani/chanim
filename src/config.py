@@ -1,5 +1,14 @@
-from src.enums import ChartType, LLMType, GroqModel, OpenaiModel  # noqa: F401
-from src.highchart_schemas import HCHTMLTemplate, HCSchemas
+from src.enums import (
+    ChartType,
+    LLMType,
+    GroqModel,
+    ManimChartType,
+    OpenaiModel,  # noqa: F401
+)
+from src.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
+from src.manim_scenes.bar_chart_animation import BarChartAnimation
+from src.manim_scenes.line_chart_animation import LineChartAnimation
+from src.manim_scenes.pie_chart_animation import PieChartAnimation
 
 
 class Config:
@@ -28,4 +37,16 @@ CHART_TEMPLATE_MAPPING = {
     ChartType.STACKED_COLUMN: HCHTMLTemplate.STACKED_COLUMN_HTML_TEMPLATE,
     ChartType.GROUPED_COLUMN: HCHTMLTemplate.GROUPED_COLUMN_HTML_TEMPLATE,
     ChartType.GROUPED_BAR: HCHTMLTemplate.GROUPED_BAR_HTML_TEMPLATE,
+}
+
+CHART_TYPE_MAPPING_MANIM = {
+    ManimChartType.LINE: ManimChartSchemas.LINE_SCHEMA,
+    ManimChartType.BAR: ManimChartSchemas.BAR_SCHEMA,
+    ManimChartType.PIE: ManimChartSchemas.PIE_SCHEMA,
+}
+
+CHART_SCENE_MAPPING = {
+    ManimChartType.LINE: LineChartAnimation,
+    ManimChartType.BAR: BarChartAnimation,
+    ManimChartType.PIE: PieChartAnimation,
 }

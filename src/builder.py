@@ -1,11 +1,20 @@
 import json
 import re
+from uuid import uuid4
 
 import pandas as pd
+from manim import tempconfig
 
-from src.config import CHART_TEMPLATE_MAPPING, CHART_TYPE_MAPPING, Config
+from src.config import (
+    CHART_SCENE_MAPPING,
+    CHART_TEMPLATE_MAPPING,
+    CHART_TYPE_MAPPING,
+    CHART_TYPE_MAPPING_MANIM,
+    Config,
+)
+from src.enums import ChartType, ManimChartType
 from src.llm_factory import LLMFactory
-from src.models import ChartSelectorResponse, HCResponse
+from src.models import ChartSelectorResponse, HCResponse, ManimChartResponse
 from src.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
 from src.prompts.selection import (
     CHART_SELECTOR_SYSTEM_PROMPT,
@@ -34,9 +43,16 @@ class Builder:
         return response
 
     @timeit
-    def _select_chart_type(self, data: str) -> str:
+    def _select_chart_type(self, data: str, advanced_mode: bool) -> str:
+        chart_type = ManimChartType if advanced_mode else ChartType
+        chart_options = [chart.value for chart in chart_type]
         prompt = [
-            {"role": "system", "content": CHART_SELECTOR_SYSTEM_PROMPT},
+            {
+                "role": "system",
+                "content": CHART_SELECTOR_SYSTEM_PROMPT.format(
+                    chart_options=json.dumps(chart_options)
+                ),
+            },
             {"role": "user", "content": CHART_SELECTOR_USER_PROMPT.format(data=data)},
         ]
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
@@ -70,9 +86,50 @@ class Builder:
         )
         return template
 
+    def _gen_chart_manim(self, data: str, chart_type: str) -> str:
+        prompt = [
+            {"role": "system", "content": HC_GEN_SYSTEM_PROMPT},
+            {
+                "role": "user",
+                "content": HC_GEN_USER_PROMPT.format(
+                    data=data,
+                    chart_type=chart_type,
+                    chart_schema=json.dumps(CHART_TYPE_MAPPING_MANIM.get(chart_type)),
+                ),
+            },
+        ]
+        response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
+        print(response)
+        response = ManimChartResponse(**json.loads(response))
+        outfile_name = uuid4().hex
+        with tempconfig(
+            {"preview": False, "quality": "medium_quality", "output_file": outfile_name}
+        ):
+            if chart_type == ManimChartType.PIE:
+                scene = CHART_SCENE_MAPPING.get(chart_type)(
+                    data=response.data,
+                    labels=response.labels,
+                    title=response.title,
+                    colors=response.colors,
+                )
+            else:
+                scene = CHART_SCENE_MAPPING.get(chart_type)(
+                    data=response.data,
+                    labels=response.labels,
+                    title=response.title,
+                    x_axis_title=response.xAxisTitle,
+                    y_axis_title=response.yAxisTitle,
+                )
+            scene.render()
+        return outfile_name
+
     @timeit
     def run(
-        self, data: str | pd.DataFrame, data_type: str, chart_type: str | None
+        self,
+        data: str | pd.DataFrame,
+        data_type: str,
+        chart_type: str | None,
+        advanced_mode: bool,
     ) -> str:
         if data_type == "text":
             data_md = self._process_text(data)
@@ -80,7 +137,10 @@ class Builder:
             data_md = data.to_markdown(index=False)
 
         if chart_type is None:
-            chart_type = self._select_chart_type(data_md)
-        chart = self._gen_chart(data_md, chart_type)
+            chart_type = self._select_chart_type(data_md, advanced_mode)
+        if advanced_mode:
+            outfile_name = self._gen_chart_manim(data_md, chart_type)
+            return outfile_name
 
+        chart = self._gen_chart(data_md, chart_type)
         return chart

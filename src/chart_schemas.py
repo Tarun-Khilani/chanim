@@ -1022,3 +1022,65 @@ class HCHTMLTemplate:
     </body>
     </html>
     """
+
+
+class ManimChartSchemas:
+    LINE_SCHEMA = {
+        "type": "object",
+        "properties": {
+            "data": {
+                "type": "array",
+                "items": {
+                    "type": "number", 
+                }
+            },
+            "labels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
+            },
+            "yAxisTitle": {
+                "type": "string"
+            }
+        },
+        "required": ["data", "labels", "title", "xAxisTitle", "yAxisTitle"]
+    }
+
+    BAR_SCHEMA = LINE_SCHEMA
+
+    PIE_SCHEMA = {
+        "type": "object",
+        "properties": {
+            "data": {
+                "type": "array",
+                "items": {
+                    "type": "number",
+                }
+            },
+            "labels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "colors": {
+                "description": "Color for each pie slice",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": ["RED", "GREEN", "YELLOW", "GOLD", "MAROON", "PINK", "LIGHT_PINK", "ORANGE", "PURPLE", "LIGHT_BROWN"]
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+        },
+        "required": ["data", "labels", "colors", "title"]
+    }

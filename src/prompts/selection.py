@@ -3,21 +3,14 @@ You are an expert Data Analyst. Your goal is to identify the most suitable chart
 You only output JSON.
 
 <CHART OPTIONS>
-- bar
-- column
-- pie
-- stacked_bar
-- stacked_column
-- grouped_column
-- grouped_bar
-- heatmap
+{chart_options}
 </CHART OPTIONS>
 
 <OUTPUT JSON FORMAT>
-{
+{{
     "reasoning": "Reasoning about the data and identifying the most suitable chart type",
     "chart_type": "Value from the list of chart options"
-}
+}}
 """
 
 CHART_SELECTOR_USER_PROMPT = """

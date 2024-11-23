@@ -27,3 +27,9 @@ class ChartType(str, Enum):
     GROUPED_COLUMN = "grouped_column"
     GROUPED_BAR = "grouped_bar"
     HEATMAP = "heatmap"
+
+
+class ManimChartType(str, Enum):
+    BAR = "bar"
+    LINE = "line"
+    PIE = "pie"

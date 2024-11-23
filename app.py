@@ -31,7 +31,7 @@ st.header("Input Data")
 
 # Text/File upload toggle
 input_method = st.radio("Choose input method:", ["Text Input", "File Upload"])
-
+use_advanced_mode = st.checkbox("Use advanced mode", value=True)
 user_input_provided = False
 
 if input_method == "Text Input":
@@ -51,7 +51,7 @@ else:  # File Upload
                 st.session_state["current_dtype"] = "csv"
                 user_input_provided = True
                 st.success("CSV file uploaded successfully!")
-            else:  # txt file
+            else:
                 # Read text file
                 user_input = uploaded_file.getvalue().decode("utf-8")
                 st.session_state["current_dtype"] = "text"
@@ -63,9 +63,10 @@ else:  # File Upload
 
 # Optionally ask for chart type
 if user_input_provided:
-    chart_type = st.selectbox(
-        "Select chart type (Optional):",
-        [
+    if use_advanced_mode:
+        options = ["none", "line", "bar", "pie"]
+    else:
+        options = [
             "none",
             "bar",
             "column",
@@ -75,7 +76,10 @@ if user_input_provided:
             "grouped_column",
             "grouped_bar",
             "heatmap",
-        ],
+        ]
+    chart_type = st.selectbox(
+        "Select chart type (Optional):",
+        options,
     )
     st.session_state["current_chart_type"] = (
         chart_type if chart_type != "none" else None
@@ -92,13 +96,23 @@ if st.button("Process Data"):
 # Chart generation
 if st.button("Generate Chart") and user_input_provided:
     with st.spinner("Generating chart..."):
-        st.session_state["chart"] = builder.run(
-            st.session_state["current_input"],
-            st.session_state["current_dtype"],
-            st.session_state["current_chart_type"],
-        )
-        st.success("Chart generated successfully!")
+        try:
+            st.session_state["chart"] = builder.run(
+                st.session_state["current_input"],
+                st.session_state["current_dtype"],
+                st.session_state["current_chart_type"],
+                use_advanced_mode,
+            )
+            st.success("Chart generated successfully!")
+        except Exception:
+            st.session_state["chart"] = None
+            st.error("Internal error occurred!")
 
 if st.session_state["chart"]:
     st.header("Chart")
-    components.html(st.session_state["chart"], height=600, width=1000)
+    if not use_advanced_mode:
+        components.html(st.session_state["chart"], height=600, width=1000)
+    else:
+        with open(f'media/videos/720p30/{st.session_state["chart"]}.mp4', "rb") as f:
+            video_bytes = f.read()
+        st.video(video_bytes, loop=True, autoplay=True)
