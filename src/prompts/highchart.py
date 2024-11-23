@@ -1,5 +1,6 @@
 HC_GEN_SYSTEM_PROMPT = """
-You are an expert Data Analyst. Your goal is to generate Highcharts JSON in the output based on input data, provided chart type and chart schema."""
+You are an expert Data Analyst. Your goal is to generate Highcharts JSON in the output based on input data, provided chart type and chart schema.
+STRICTLY FOLLOW THE INPUT CHART SCHEMA FOR JSON OUTPUT."""
 
 HC_GEN_USER_PROMPT = """
 <DATA>

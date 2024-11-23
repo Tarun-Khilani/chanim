@@ -12,6 +12,8 @@ if "current_input" not in st.session_state:
     st.session_state["current_input"] = ""
 if "current_dtype" not in st.session_state:
     st.session_state["current_dtype"] = ""
+if "current_chart_type" not in st.session_state:
+    st.session_state["current_chart_type"] = ""
 if "chart" not in st.session_state:
     st.session_state["chart"] = None
 
@@ -37,12 +39,12 @@ if input_method == "Text Input":
     st.session_state["current_dtype"] = "text"
     user_input_provided = True
 else:  # File Upload
-    uploaded_file = st.file_uploader("Upload a file", type=['csv', 'txt'])
+    uploaded_file = st.file_uploader("Upload a file", type=["csv", "txt"])
     if uploaded_file is not None:
-        file_extension = uploaded_file.name.split('.')[-1].lower()
-        
+        file_extension = uploaded_file.name.split(".")[-1].lower()
+
         try:
-            if file_extension == 'csv':
+            if file_extension == "csv":
                 # Read CSV file
                 df = pd.read_csv(uploaded_file)
                 user_input = df
@@ -55,9 +57,29 @@ else:  # File Upload
                 st.session_state["current_dtype"] = "text"
                 user_input_provided = True
                 st.success("Text file uploaded successfully!")
-                
+
         except Exception as e:
             st.error(f"Error reading file: {str(e)}")
+
+# Optionally ask for chart type
+if user_input_provided:
+    chart_type = st.selectbox(
+        "Select chart type (Optional):",
+        [
+            "none",
+            "bar",
+            "column",
+            "pie",
+            "stacked_bar",
+            "stacked_column",
+            "grouped_column",
+            "grouped_bar",
+            "heatmap",
+        ],
+    )
+    st.session_state["current_chart_type"] = (
+        chart_type if chart_type != "none" else None
+    )
 
 # Process button
 if st.button("Process Data"):
@@ -70,7 +92,11 @@ if st.button("Process Data"):
 # Chart generation
 if st.button("Generate Chart") and user_input_provided:
     with st.spinner("Generating chart..."):
-        st.session_state["chart"] = builder.run(st.session_state["current_input"], st.session_state["current_dtype"])
+        st.session_state["chart"] = builder.run(
+            st.session_state["current_input"],
+            st.session_state["current_dtype"],
+            st.session_state["current_chart_type"],
+        )
         st.success("Chart generated successfully!")
 
 if st.session_state["chart"]:

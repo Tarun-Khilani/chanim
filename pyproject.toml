@@ -1,10 +1,11 @@
 [project]
-name = "chart-gen"
+name = "chanim"
 version = "0.1.0"
-description = "Add your description here"
+description = "Automated Chart Generation from text or csv data"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "black>=24.10.0",
     "groq>=0.12.0",
     "openai>=1.55.0",
     "pandas>=2.2.3",

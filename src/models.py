@@ -10,4 +10,6 @@ class ChartSelectorResponse(BaseModel):
 class HCResponse(BaseModel):
     data: list[dict]
     title: str
-    choiceColors: list[str] | None = None
+    xAxisTitle: str = ''
+    yAxisTitle: str = ''
+    choiceColors: list[str] = []

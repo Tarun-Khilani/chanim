@@ -1,5 +1,3 @@
-# Chart Data Templates
-
 class HCSchemas:
     BAR_SCHEMA = {
         "type": "object",
@@ -12,7 +10,7 @@ class HCSchemas:
                         "choice": {
                             "type": "string"
                         },
-                        "percentage": {
+                        "value": {
                             "type": "number"
                         }
                     }
@@ -20,34 +18,18 @@ class HCSchemas:
             },
             "title": {
                 "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
+            },
+            "yAxisTitle": {
+                "type": "string"
             }
         },
-        "required": ["data", "title"]
+        "required": ["data", "title", "xAxisTitle", "yAxisTitle"]
     }
 
-    COLUMN_SCHEMA = {
-        "type": "object",
-        "properties": {
-            "data": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "choice": {
-                            "type": "string"
-                        },
-                        "percentage": {
-                            "type": "number"
-                        }
-                    }
-                }
-            },
-            "title": {
-                "type": "string"
-            }
-        },
-        "required": ["data", "title"]
-    }
+    COLUMN_SCHEMA = BAR_SCHEMA
 
     GROUPED_COLUMN_SCHEMA = {
         "type": "object",
@@ -68,7 +50,7 @@ class HCSchemas:
                                     "choice": {
                                         "type": "string"
                                     },
-                                    "percentage": {
+                                    "value": {
                                         "type": "number"
                                     }
                                 }
@@ -85,51 +67,18 @@ class HCSchemas:
             },
             "title": {
                 "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
+            },
+            "yAxisTitle": {
+                "type": "string"
             }
         },
-        "required": ["data", "choiceColors", "title"]
+        "required": ["data", "choiceColors", "title", "xAxisTitle", "yAxisTitle"]
     }
 
-    GROUPED_BAR_SCHEMA = {
-        "type": "object",
-        "properties": {
-            "data": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "group": {
-                            "type": "string"
-                        },
-                        "choices": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "choice": {
-                                        "type": "string"
-                                    },
-                                    "percentage": {
-                                        "type": "number"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "choiceColors": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "title": {
-                "type": "string"
-            }
-        },
-        "required": ["data", "choiceColors", "title"]
-    }
+    GROUPED_BAR_SCHEMA = GROUPED_COLUMN_SCHEMA
 
     PIE_SCHEMA = {
         "type": "object",
@@ -142,7 +91,7 @@ class HCSchemas:
                         "choice": {
                             "type": "string"
                         },
-                        "percentage": {
+                        "value": {
                             "type": "number"
                         }
                     }
@@ -173,7 +122,7 @@ class HCSchemas:
                         "choice": {
                             "type": "string"
                         },
-                        "percentages": {
+                        "values": {
                             "type": "array",
                             "items": {
                                 "type": "number"
@@ -197,9 +146,12 @@ class HCSchemas:
             },
             "title": {
                 "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
             }
         },
-        "required": ["data", "choiceColors", "title"]
+        "required": ["data", "choiceColors", "title", "xAxisTitle"]
     }
 
     STACKED_COLUMN_SCHEMA = {
@@ -214,7 +166,7 @@ class HCSchemas:
                         "choice": {
                             "type": "string"
                         },
-                        "percentages": {
+                        "values": {
                             "type": "array",
                             "items": {
                                 "type": "number"
@@ -238,9 +190,12 @@ class HCSchemas:
             },
             "title": {
                 "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
             }
         },
-        "required": ["data", "choiceColors", "title"]
+        "required": ["data", "choiceColors", "title", "xAxisTitle"]
     }
 
     HEATMAP_SCHEMA = {
@@ -262,7 +217,7 @@ class HCSchemas:
                                     "choice": {
                                         "type": "string"
                                     },
-                                    "percentage": {
+                                    "value": {
                                         "type": "number"
                                     }
                                 }
@@ -273,9 +228,15 @@ class HCSchemas:
             },
             "title": {
                 "type": "string"
+            },
+            "xAxisTitle": {
+                "type": "string"
+            },
+            "yAxisTitle": {
+                "type": "string"
             }
         },
-        "required": ["data", "title"]
+        "required": ["data", "title", "xAxisTitle", "yAxisTitle"]
     }
 
 
@@ -305,6 +266,10 @@ class HCHTMLTemplate:
                 style: {
                     fontFamily: 'Rubik',
                     fontSize: '14px'
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutBounce'
                 }
             },
             title: {
@@ -315,7 +280,7 @@ class HCHTMLTemplate:
                     return data.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -336,6 +301,10 @@ class HCHTMLTemplate:
             },
             plotOptions: {
                 bar: {
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutElastic'
+                },
                 dataLabels: {
                     enabled: true,
                     format: '{y}',
@@ -360,12 +329,12 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: [{
-                name: 'Percentage',
+                name: '{yAxisTitle}',
                 data: data.map(function(data) {
-                return data.percentage;
+                return data.value;
                 })
             }]
         };
@@ -403,6 +372,10 @@ class HCHTMLTemplate:
                 style: {
                     fontFamily: 'Rubik',
                     fontSize: '14px'
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutBounce'
                 }
             },
             title: {
@@ -413,7 +386,7 @@ class HCHTMLTemplate:
                     return data.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -434,6 +407,10 @@ class HCHTMLTemplate:
             },
             plotOptions: {
                 column: {
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutElastic'
+                },
                 dataLabels: {
                     enabled: true,
                     format: '{y}',
@@ -458,12 +435,12 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: [{
-                name: 'Percentage',
+                name: '{yAxisTitle}',
                 data: data.map(function(data) {
-                return data.percentage;
+                return data.value;
                 })
             }]
         };
@@ -500,6 +477,10 @@ class HCHTMLTemplate:
                 type: 'column',
                 style: {
                     fontFamily: 'Rubik',
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutBounce'
                 }
             },
             title: {
@@ -510,7 +491,7 @@ class HCHTMLTemplate:
                     return choice.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -521,7 +502,7 @@ class HCHTMLTemplate:
             },
             yAxis: {
                 title: {
-                    text: ''
+                    text: '{yAxisTitle}'
                 },
                 labels: {
                     enabled: false
@@ -531,6 +512,10 @@ class HCHTMLTemplate:
             plotOptions: {
                 column: {
                     grouping: true,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutElastic'
+                    },
                     dataLabels: {
                         enabled: true,
                         format: '{point.y}',
@@ -550,13 +535,13 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: data.map(function(data, index) {
                 return {
                     name: data.group,
                     data: data.choices.map(function(choice) {
-                        return choice.percentage;
+                        return choice.value;
                     }),
                     color: brandColors[index % brandColors.length]
                 };
@@ -594,6 +579,10 @@ class HCHTMLTemplate:
                 type: 'bar',
                 style: {
                     fontFamily: 'Rubik',
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutBounce'
                 }
             },
             title: {
@@ -604,7 +593,7 @@ class HCHTMLTemplate:
                     return choice.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -615,7 +604,7 @@ class HCHTMLTemplate:
             },
             yAxis: {
                 title: {
-                    text: ''
+                    text: '{yAxisTitle}'
                 },
                 labels: {
                     enabled: false
@@ -625,6 +614,10 @@ class HCHTMLTemplate:
             plotOptions: {
                 bar: {
                     grouping: true,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutElastic'
+                    },
                     dataLabels: {
                         enabled: true,
                         format: '{point.y}',
@@ -644,13 +637,13 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: data.map(function(data, index) {
                 return {
                     name: data.group,
                     data: data.choices.map(function(choice) {
-                        return choice.percentage;
+                        return choice.value;
                     }),
                     color: brandColors[index % brandColors.length]
                 };
@@ -688,6 +681,9 @@ class HCHTMLTemplate:
                 type: 'pie',
                 style: {
                     fontFamily: 'Rubik',
+                },
+                animation: {
+                    duration: 2000
                 }
             },
             title: {
@@ -716,14 +712,17 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: [{
                 name: 'Choices',
+                animation: {
+                    duration: 2000
+                },
                 data: data.map(function(data) {
                     return {
                         name: data.choice,
-                        y: data.percentage
+                        y: data.value
                     };
                 })
             }]
@@ -772,7 +771,7 @@ class HCHTMLTemplate:
                     return data.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -806,13 +805,13 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: options.map(function(option, index) {
                 return {
                     name: option,
                     data: data.map(function(data) {
-                        return data.percentages[index];
+                        return data.values[index];
                     })
                 };
             })
@@ -861,7 +860,7 @@ class HCHTMLTemplate:
                     return data.choice;
                 }),
                 title: {
-                    text: ''
+                    text: '{xAxisTitle}'
                 },
                 labels: {
                     style: {
@@ -895,13 +894,13 @@ class HCHTMLTemplate:
                 }
             },
             credits: {
-                enabled: false
+                enabled: true
             },
             series: options.map(function(option, index) {
                 return {
                     name: option,
                     data: data.map(function(data) {
-                        return data.percentages[index];
+                        return data.values[index];
                     })
                 };
             })
@@ -940,14 +939,14 @@ class HCHTMLTemplate:
             }
         },
         title: {
-            text: ''
+            text: '{title}'
         },
         xAxis: {
             categories: data[0].choices.map(function(choice) {
                 return choice.choice;
             }),
             title: {
-                text: '{title}'
+                text: '{xAxisTitle}'
             },
             labels: {
                 style: {
@@ -961,7 +960,7 @@ class HCHTMLTemplate:
                 return data.group;
             }),
             title: {
-                text: ''
+                text: '{yAxisTitle}'
             },
             labels: {
                 style: {
@@ -1001,7 +1000,7 @@ class HCHTMLTemplate:
             }
         },
         credits: {
-            enabled: false
+            enabled: true
         },
         series: [{
             data: data.reduce(function (arr, data, rowIndex) {
@@ -1009,7 +1008,7 @@ class HCHTMLTemplate:
                     return {
                     x: colIndex,
                     y: rowIndex,
-                    value: choice.percentage
+                    value: choice.value
                     };
                 }));
             }, [])
