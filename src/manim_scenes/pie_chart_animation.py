@@ -1,5 +1,5 @@
 from manim import *
-config.background_color = BLUE
+config.background_color = DARK_BLUE
 
 class PieChartAnimation(Scene):
     def __init__(self, data, labels, colors, title="Pie Chart Animation", **kwargs):

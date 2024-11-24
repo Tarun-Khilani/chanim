@@ -35,7 +35,7 @@ use_advanced_mode = st.checkbox("Use advanced mode", value=True)
 user_input_provided = False
 
 if input_method == "Text Input":
-    user_input = st.text_area("Enter your text data:", height=200)
+    user_input = st.text_area("Enter your text data:", height=100)
     st.session_state["current_dtype"] = "text"
     user_input_provided = True
 else:  # File Upload
@@ -106,7 +106,7 @@ if st.button("Generate Chart") and user_input_provided:
             st.success("Chart generated successfully!")
         except Exception:
             st.session_state["chart"] = None
-            st.error("Internal error occurred!")
+            st.error("Internal error occurred! Please try again.")
 
 if st.session_state["chart"]:
     st.header("Chart")

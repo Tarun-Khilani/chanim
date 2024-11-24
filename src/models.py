@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.enums import ChartType, ManimChartType
+from src.enums import Arrangement, ChartType, ManimChartType, SVGAssets
 
 
 class ChartSelectorResponse(BaseModel):
@@ -23,3 +23,13 @@ class ManimChartResponse(BaseModel):
     xAxisTitle: str = ""
     yAxisTitle: str = ""
     colors: list[str] = []
+
+
+class InfographicResponse(BaseModel):
+    reasoning: list[str]
+    title: str
+    chart_type: ManimChartType | None
+    insights: list[str]
+    data: dict[str, int | float]
+    asset: SVGAssets
+    arrangement: Arrangement

@@ -1,7 +1,9 @@
 from manim import *
+from src.enums import Arrangement, SVGAssets
 from src.manim_scenes.bar_chart_animation import BarChartAnimation
 from src.manim_scenes.line_chart_animation import LineChartAnimation
 from src.manim_scenes.pie_chart_animation import PieChartAnimation
+from src.manim_scenes.scene_builder import InfographicBuilder
 
 
 def test_bar_chart():
@@ -83,12 +85,39 @@ def test_pie_chart():
         scene.render()
 
 
+def test_infographic():
+    # Example 1: Market Share Distribution
+    with tempconfig(
+        {
+            "preview": False,
+            "quality": "medium_quality",
+            "output_file": "market_share_infographic",
+        }
+    ):
+        scene = InfographicBuilder(
+            title="Market Share Distribution",
+            chart_type="bar",
+            insights=[
+                "Company A has the largest market share.",
+                "Company B is growing steadily.",
+                "Company C has seen a decline.",
+            ],
+            data={"Company A": 45, "Company B": 25, "Company C": 10},
+            asset=SVGAssets.BUSINESS_PERSON,
+            arrangement=Arrangement.LEFT_CHART_RIGHT_TEXT,
+        )
+        scene.render()
+
+
 if __name__ == "__main__":
     # print("Testing Bar Chart Animations...")
     # test_bar_chart()
 
-    print("Testing Line Chart Animations...")
-    test_line_chart()
+    # print("Testing Line Chart Animations...")
+    # test_line_chart()
 
     # print("Testing Pie Chart Animations...")
     # test_pie_chart()
+
+    print("Testing Infographic Builder...")
+    test_infographic()

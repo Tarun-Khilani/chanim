@@ -33,3 +33,18 @@ class ManimChartType(str, Enum):
     BAR = "bar"
     LINE = "line"
     PIE = "pie"
+
+
+class SVGAssets(str, Enum):
+    BUSINESS_PERSON = "buisness-person.svg"
+    CAR = "car.svg"
+    HOUSE_PRICE = "house-price.svg"
+    SALE = "sale.svg"
+    SUPPORTING = "supporting.svg"
+
+
+class Arrangement(str, Enum):
+    LEFT_CHART_RIGHT_TEXT = "LEFT_CHART_RIGHT_TEXT"
+    RIGHT_CHART_LEFT_TEXT = "RIGHT_CHART_LEFT_TEXT"
+    TOP_TITLE_BOTTOM_CONTENT = "TOP_TITLE_BOTTOM_CONTENT"
+    CHART_CENTER_TEXT_BELOW = "CHART_CENTER_TEXT_BELOW"

@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pandas as pd
 from manim import tempconfig
+from openai.lib._parsing import type_to_response_format_param as _type_to_response_format
 
 from src.config import (
     CHART_SCENE_MAPPING,
@@ -14,8 +15,10 @@ from src.config import (
 )
 from src.enums import ChartType, ManimChartType
 from src.llm_factory import LLMFactory
-from src.models import ChartSelectorResponse, HCResponse, ManimChartResponse
+from src.manim_scenes.scene_builder import InfographicBuilder
+from src.models import ChartSelectorResponse, HCResponse, InfographicResponse, ManimChartResponse
 from src.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
+from src.prompts.infographics import INFOGRAPHICS_SYSTEM_PROMPT, INFOGRAPHICS_USER_PROMPT
 from src.prompts.selection import (
     CHART_SELECTOR_SYSTEM_PROMPT,
     CHART_SELECTOR_USER_PROMPT,
@@ -123,6 +126,30 @@ class Builder:
             scene.render()
         return outfile_name
 
+    def _gen_infographic(self, data: str) -> str:
+        schema = json.dumps(_type_to_response_format(InfographicResponse), indent=2)
+        prompt = [
+            {"role": "system", "content": INFOGRAPHICS_SYSTEM_PROMPT.format(schema=schema)},
+            {"role": "user", "content": INFOGRAPHICS_USER_PROMPT.format(data=data)},
+        ]
+        response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
+        print(response)
+        response = InfographicResponse(**json.loads(response))
+        outfile_name = uuid4().hex
+        with tempconfig(
+            {"preview": False, "quality": "medium_quality", "output_file": outfile_name}
+        ):
+            scene = InfographicBuilder(
+                title=response.title,
+                chart_type=response.chart_type.value if response.chart_type else None,
+                insights=response.insights,
+                data=response.data,
+                arrangement=response.arrangement,
+                asset=response.asset.value,
+            )
+            scene.render()
+        return outfile_name
+
     @timeit
     def run(
         self,
@@ -133,13 +160,16 @@ class Builder:
     ) -> str:
         if data_type == "text":
             data_md = self._process_text(data)
+            if advanced_mode:
+                data_md = data
         else:
             data_md = data.to_markdown(index=False)
 
-        if chart_type is None:
+        if chart_type is None and not advanced_mode:
             chart_type = self._select_chart_type(data_md, advanced_mode)
         if advanced_mode:
-            outfile_name = self._gen_chart_manim(data_md, chart_type)
+            # outfile_name = self._gen_chart_manim(data_md, chart_type)
+            outfile_name = self._gen_infographic(data_md)
             return outfile_name
 
         chart = self._gen_chart(data_md, chart_type)

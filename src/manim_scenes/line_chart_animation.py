@@ -1,6 +1,6 @@
 from manim import *
 
-config.background_color = BLUE
+config.background_color = DARK_BLUE
 
 
 class LineChartAnimation(Scene):
