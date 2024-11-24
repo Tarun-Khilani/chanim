@@ -29,7 +29,7 @@ To set up the project, follow these steps:
         ```
     - On Linux:
         ```sh
-        sudo apt install texlive texlive-latex-extra ffmpeg
+        sudo apt install build-essential python3-dev libcairo2-dev libpango1.0-dev texlive texlive-latex-extra ffmpeg
         ```
 
 4. Activate the virtual environment:
