@@ -21,21 +21,22 @@ builder = Builder()
 
 # Set page config
 st.set_page_config(
-    page_title="Chart Gen", page_icon=":chart_with_upwards_trend:", layout="wide"
+    page_title="Chanim", page_icon=":chart_with_upwards_trend:", layout="centered"
 )
-st.title("Chart Gen")
+st.image("public/logo.jpeg", use_container_width=True)
+st.title("Dynamic Infographics Generator")
 
 
 # Input section
 st.header("Input Data")
 
 # Text/File upload toggle
-input_method = st.radio("Choose input method:", ["Text Input", "File Upload"])
-use_advanced_mode = st.checkbox("Use advanced mode", value=True)
+input_method = st.radio("Choose Input Method", ["Text Input", "File Upload"])
+use_advanced_mode = st.checkbox("Use Advanced Mode", value=True)
 user_input_provided = False
 
 if input_method == "Text Input":
-    user_input = st.text_area("Enter your text data:", height=100)
+    user_input = st.text_area("Enter your text", height=100)
     st.session_state["current_dtype"] = "text"
     user_input_provided = True
 else:  # File Upload
@@ -50,16 +51,14 @@ else:  # File Upload
                 user_input = df
                 st.session_state["current_dtype"] = "csv"
                 user_input_provided = True
-                st.success("CSV file uploaded successfully!")
             else:
                 # Read text file
                 user_input = uploaded_file.getvalue().decode("utf-8")
                 st.session_state["current_dtype"] = "text"
                 user_input_provided = True
-                st.success("Text file uploaded successfully!")
 
-        except Exception as e:
-            st.error(f"Error reading file: {str(e)}")
+        except Exception:
+            st.error("Error reading file")
 
 # Optionally ask for chart type
 if user_input_provided:
@@ -78,7 +77,7 @@ if user_input_provided:
             "heatmap",
         ]
     chart_type = st.selectbox(
-        "Select chart type (Optional):",
+        "Select Chart Type (Optional)",
         options,
     )
     st.session_state["current_chart_type"] = (
@@ -94,8 +93,8 @@ if st.button("Process Data"):
         st.warning("Please provide input data first!")
 
 # Chart generation
-if st.button("Generate Chart") and user_input_provided:
-    with st.spinner("Generating chart..."):
+if st.button("Generate") and user_input_provided:
+    with st.spinner("Generating ..."):
         try:
             st.session_state["chart"] = builder.run(
                 st.session_state["current_input"],
@@ -103,13 +102,13 @@ if st.button("Generate Chart") and user_input_provided:
                 st.session_state["current_chart_type"],
                 use_advanced_mode,
             )
-            st.success("Chart generated successfully!")
+            st.success("Generation Successful!")
         except Exception:
             st.session_state["chart"] = None
             st.error("Internal error occurred! Please try again.")
 
 if st.session_state["chart"]:
-    st.header("Chart")
+    st.header("Infographics")
     if not use_advanced_mode:
         components.html(st.session_state["chart"], height=600, width=1000)
     else:
