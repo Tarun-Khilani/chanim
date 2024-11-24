@@ -164,7 +164,7 @@ class InfographicBuilder(Scene):
         if len(self.insights) > 1:
             self.add_svg(
                 svg_file_path=Path(__file__).parent.parent.parent
-                / "assets/business-person.svg"
+                / f"assets/{self.asset}"
             )
             for i, insight in enumerate(self.insights):
                 font_size = 20
@@ -180,7 +180,7 @@ class InfographicBuilder(Scene):
         else:
             self.add_svg(
                 svg_file_path=Path(__file__).parent.parent.parent
-                / "assets/business-person.svg"
+                / f"assets/{self.asset}"
             )
             insights_mobj = Text(self.insights[0], font_size=28).align_to(LEFT, LEFT)
             self.play(Write(insights_mobj), run_time=1)

@@ -60,29 +60,29 @@ else:  # File Upload
         except Exception:
             st.error("Error reading file")
 
-# Optionally ask for chart type
-if user_input_provided:
-    if use_advanced_mode:
-        options = ["none", "line", "bar", "pie"]
-    else:
-        options = [
-            "none",
-            "bar",
-            "column",
-            "pie",
-            "stacked_bar",
-            "stacked_column",
-            "grouped_column",
-            "grouped_bar",
-            "heatmap",
-        ]
-    chart_type = st.selectbox(
-        "Select Chart Type (Optional)",
-        options,
-    )
-    st.session_state["current_chart_type"] = (
-        chart_type if chart_type != "none" else None
-    )
+# # Optionally ask for chart type
+# if user_input_provided:
+#     if use_advanced_mode:
+#         options = ["none", "line", "bar", "pie"]
+#     else:
+#         options = [
+#             "none",
+#             "bar",
+#             "column",
+#             "pie",
+#             "stacked_bar",
+#             "stacked_column",
+#             "grouped_column",
+#             "grouped_bar",
+#             "heatmap",
+#         ]
+#     chart_type = st.selectbox(
+#         "Select Chart Type (Optional)",
+#         options,
+#     )
+#     st.session_state["current_chart_type"] = (
+#         chart_type if chart_type != "none" else None
+#     )
 
 # Process button
 if st.button("Process Data"):
@@ -99,7 +99,7 @@ if st.button("Generate") and user_input_provided:
             st.session_state["chart"] = builder.run(
                 st.session_state["current_input"],
                 st.session_state["current_dtype"],
-                st.session_state["current_chart_type"],
+                None,
                 use_advanced_mode,
             )
             st.success("Generation Successful!")
