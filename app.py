@@ -4,10 +4,15 @@ import streamlit.components.v1 as components
 from dotenv import load_dotenv
 
 from src.builder import Builder
+from src.logger import setup_logger
 
 load_dotenv()
 
+logger = setup_logger(__name__)
+
 # Initialize session state
+if "builder" not in st.session_state:
+    st.session_state["builder"] = Builder()
 if "current_input" not in st.session_state:
     st.session_state["current_input"] = ""
 if "current_dtype" not in st.session_state:
@@ -16,8 +21,6 @@ if "current_chart_type" not in st.session_state:
     st.session_state["current_chart_type"] = ""
 if "chart" not in st.session_state:
     st.session_state["chart"] = None
-
-builder = Builder()
 
 # Set page config
 st.set_page_config(
@@ -51,59 +54,45 @@ else:  # File Upload
                 user_input = df
                 st.session_state["current_dtype"] = "csv"
                 user_input_provided = True
+                logger.debug(f"Successfully loaded CSV file: {uploaded_file.name}")
             else:
                 # Read text file
                 user_input = uploaded_file.getvalue().decode("utf-8")
                 st.session_state["current_dtype"] = "text"
                 user_input_provided = True
+                logger.debug(f"Successfully loaded text file: {uploaded_file.name}")
 
-        except Exception:
+        except Exception as e:
+            error_msg = f"Error reading file {uploaded_file.name}: {str(e)}"
+            logger.error(error_msg)
             st.error("Error reading file")
-
-# # Optionally ask for chart type
-# if user_input_provided:
-#     if use_advanced_mode:
-#         options = ["none", "line", "bar", "pie"]
-#     else:
-#         options = [
-#             "none",
-#             "bar",
-#             "column",
-#             "pie",
-#             "stacked_bar",
-#             "stacked_column",
-#             "grouped_column",
-#             "grouped_bar",
-#             "heatmap",
-#         ]
-#     chart_type = st.selectbox(
-#         "Select Chart Type (Optional)",
-#         options,
-#     )
-#     st.session_state["current_chart_type"] = (
-#         chart_type if chart_type != "none" else None
-#     )
 
 # Process button
 if st.button("Process Data"):
     if user_input_provided:
         st.session_state["current_input"] = user_input
+        logger.debug("Data processed and stored in session state")
         st.success("Data processed successfully!")
     else:
+        logger.warning("Process attempt without input data")
         st.warning("Please provide input data first!")
 
 # Chart generation
 if st.button("Generate") and user_input_provided:
+    logger.debug("Starting chart generation")
     with st.spinner("Generating ..."):
         try:
-            st.session_state["chart"] = builder.run(
+            st.session_state["chart"] = st.session_state["builder"].run(
                 st.session_state["current_input"],
                 st.session_state["current_dtype"],
                 None,
                 use_advanced_mode,
             )
+            logger.debug("Chart generation successful")
             st.success("Generation Successful!")
-        except Exception:
+        except Exception as e:
+            error_msg = f"Chart generation failed: {str(e)}"
+            logger.error(error_msg)
             st.session_state["chart"] = None
             st.error("Internal error occurred! Please try again.")
 
@@ -111,7 +100,15 @@ if st.session_state["chart"]:
     st.header("Infographics")
     if not use_advanced_mode:
         components.html(st.session_state["chart"], height=600, width=1000)
+        logger.debug("Rendered HTML chart component")
     else:
-        with open(f'media/videos/720p30/{st.session_state["chart"]}.mp4', "rb") as f:
-            video_bytes = f.read()
-        st.video(video_bytes, loop=True, autoplay=True)
+        try:
+            video_path = f'media/videos/720p30/{st.session_state["chart"]}.mp4'
+            with open(video_path, "rb") as f:
+                video_bytes = f.read()
+            st.video(video_bytes, loop=True, autoplay=True)
+            logger.debug(f"Successfully loaded and displayed video: {video_path}")
+        except Exception as e:
+            error_msg = f"Error loading video file: {str(e)}"
+            logger.error(error_msg)
+            st.error("Error displaying video")

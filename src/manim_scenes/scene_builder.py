@@ -1,11 +1,26 @@
+import logging
+from datetime import datetime
 from pathlib import Path
+
 from manim import *
 
 from src.config import Config
 from src.enums import Arrangement
 
-
 config.background_color = DARK_BLUE
+# Create and set up file handler
+logs_dir = Path("logs")
+logs_dir.mkdir(exist_ok=True)
+
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+file_handler = logging.FileHandler(
+    logs_dir / f"chanim_{datetime.now().strftime('%Y%m%d')}.log"
+)
+file_handler.setLevel(Config.LOG_LEVEL)
+file_handler.setFormatter(file_formatter)
+logging.getLogger("manim").addHandler(file_handler)
 
 
 class InfographicBuilder(Scene):

@@ -16,6 +16,7 @@ class GroqModel(str, Enum):
     LLAMA3_70B = "llama-3.1-70b-versatile"
     LLAMA3_11B = "llama-3.2-11b-vision-preview"
     LLAMA3_90B = "llama-3.2-90b-vision-preview"
+    LLAMA3_70B_TOOL = "llama3-groq-70b-8192-tool-use-preview"
 
 
 class ChartType(str, Enum):

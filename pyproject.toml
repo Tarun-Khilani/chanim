@@ -5,10 +5,14 @@ description = "Automated Chart Generation from text or csv data"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "arize-phoenix-otel>=0.6.1",
+    "arize-phoenix>=5.12.0",
     "black>=24.10.0",
     "groq>=0.12.0",
     "manim>=0.18.1",
     "openai>=1.55.0",
+    "openinference-instrumentation-groq>=0.1.4",
+    "openinference-instrumentation-openai>=0.1.18",
     "pandas>=2.2.3",
     "python-dotenv>=1.0.1",
     "streamlit>=1.40.1",

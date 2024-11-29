@@ -44,8 +44,9 @@ To set up the project, follow these steps:
 
 ## Usage
 
-To run the project, activate the virtual environment and use the following command:
+To run the project, activate the virtual environment and use the following commands:
 ```sh
+phoenix serve
 streamlit run app.py
 ```
 

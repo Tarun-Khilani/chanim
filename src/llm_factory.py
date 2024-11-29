@@ -3,11 +3,22 @@ from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 from groq import Groq
 from openai import OpenAI
+from openinference.instrumentation.groq import GroqInstrumentor
+from openinference.instrumentation.openai import OpenAIInstrumentor
+from phoenix.otel import register
 
 from src.config import Config
 from src.enums import LLMType
 
 load_dotenv()
+
+tracer_provider = register(
+    project_name="chanim",
+    endpoint="http://localhost:6006/v1/traces",
+)
+
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+GroqInstrumentor().instrument(tracer_provider=tracer_provider)
 
 
 class LLM(ABC):
