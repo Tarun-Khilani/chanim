@@ -134,7 +134,7 @@ class InfographicBuilder(Scene):
             pie.add(sector)
             pie.add(label)
             start_angle += angle
-        self.play(pie.to_edge(position), run_time=0.5)
+        pie.to_edge(position)
 
     def add_line_graph(self, position=LEFT):
         """Return a line graph."""
