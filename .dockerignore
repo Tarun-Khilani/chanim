@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+*.log
+logs/
+media/
+sample_data/
+phoenix_data/
+
+# Docker
+.docker
+Dockerfile
+.dockerignore

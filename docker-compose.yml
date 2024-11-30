@@ -1,0 +1,34 @@
+services:
+  phoenix:
+    image: arizephoenix/phoenix:version-5.12.0
+    ports:
+      - "6006:6006"
+      - "4317:4317"
+    environment:
+      - PHOENIX_WORKING_DIR=/mnt/data
+    volumes:
+      - ./phoenix_data:/mnt/data
+
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./media:/app/media
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_AUTH_KEY=${API_AUTH_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - COLLECTOR_ENDPOINT=http://phoenix:6006/v1/traces
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://0.0.0.0:8000/api/v1/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    depends_on:
+      - phoenix

@@ -24,6 +24,7 @@ app = FastAPI(
     title="Chanim API",
     description="API for dynamic infographics generation",
     version="0.1.0",
+    root_path="/api/v1",
 )
 
 # Add CORS middleware
@@ -62,8 +63,15 @@ def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
     return True
 
 
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"status": "healthy"}
+
+
 @app.post("/generate/text", response_model=GenerationResponse, tags=["Infographics"])
-async def generate_from_text(request: TextRequest, authenticated: bool = Depends(authenticate)):
+async def generate_from_text(
+    request: TextRequest, authenticated: bool = Depends(authenticate)
+):
     """Generate infographic video from text input"""
     try:
         result = builder.run(

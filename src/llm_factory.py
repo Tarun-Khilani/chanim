@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import os
 
 from dotenv import load_dotenv
 from groq import Groq
@@ -14,7 +15,7 @@ load_dotenv()
 
 tracer_provider = register(
     project_name="chanim",
-    endpoint="http://localhost:6006/v1/traces",
+    endpoint=os.getenv("COLLECTOR_ENDPOINT", "http://localhost:6006/v1/traces"),
 )
 
 OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
