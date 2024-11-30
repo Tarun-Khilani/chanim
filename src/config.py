@@ -1,11 +1,12 @@
+from src.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
 from src.enums import (
     ChartType,
-    LLMType,
     GroqModel,
+    LLMType,
     ManimChartType,
-    OpenaiModel,  # noqa: F401
+    OpenaiModel,
+    VideoQuality,
 )
-from src.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
 from src.manim_scenes.bar_chart_animation import BarChartAnimation
 from src.manim_scenes.line_chart_animation import LineChartAnimation
 from src.manim_scenes.pie_chart_animation import PieChartAnimation
@@ -18,6 +19,11 @@ class Config:
     DEFAULT_LLM_PROVIDER = LLMType.GROQ
     DEFAULT_LLM = GroqModel.LLAMA3_70B
 
+
+QUALITY_MAPPING = {
+    VideoQuality.LOW: "480p15",
+    VideoQuality.MEDIUM: "720p30",
+}
 
 CHART_TYPE_MAPPING = {
     ChartType.BAR: HCSchemas.BAR_SCHEMA,

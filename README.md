@@ -50,6 +50,13 @@ phoenix serve
 streamlit run app.py
 ```
 
+To run the API, use the following command:
+```sh
+phoenix serve
+python api.py
+```
+The API will be available at `http://localhost:8000`.
+
 ## License
 
 This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.

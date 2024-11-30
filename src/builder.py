@@ -15,7 +15,7 @@ from src.config import (
     CHART_TYPE_MAPPING_MANIM,
     Config,
 )
-from src.enums import ChartType, ManimChartType
+from src.enums import ChartType, DataType, ManimChartType, VideoQuality
 from src.llm_factory import LLMFactory
 from src.logger import setup_logger
 from src.manim_scenes.scene_builder import InfographicBuilder
@@ -143,7 +143,7 @@ class Builder:
             scene.render()
         return outfile_name
 
-    def _gen_infographic(self, data: str) -> str:
+    def _gen_infographic(self, data: str, video_quality: VideoQuality) -> str:
         schema = json.dumps(_type_to_response_format(InfographicResponse), indent=2)
         prompt = [
             {
@@ -160,7 +160,7 @@ class Builder:
         )
         outfile_name = uuid4().hex
         with tempconfig(
-            {"preview": False, "quality": "medium_quality", "output_file": outfile_name}
+            {"preview": False, "quality": video_quality.value, "output_file": outfile_name}
         ):
             scene = InfographicBuilder(
                 title=response.title,
@@ -177,23 +177,9 @@ class Builder:
     def run(
         self,
         data: str | pd.DataFrame,
-        data_type: str,
-        chart_type: str | None,
-        advanced_mode: bool,
+        data_type: DataType,
+        video_quality: VideoQuality,
     ) -> str:
-        if data_type == "text":
-            data_md = self._process_text(data)
-            if advanced_mode:
-                data_md = data
-        else:
-            data_md = data.to_markdown(index=False)
-
-        if chart_type is None and not advanced_mode:
-            chart_type = self._select_chart_type(data_md, advanced_mode)
-        if advanced_mode:
-            # outfile_name = self._gen_chart_manim(data_md, chart_type)
-            outfile_name = self._gen_infographic(data_md)
-            return outfile_name
-
-        chart = self._gen_chart(data_md, chart_type)
-        return chart
+        data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
+        outfile_name = self._gen_infographic(data_md, video_quality)
+        return outfile_name

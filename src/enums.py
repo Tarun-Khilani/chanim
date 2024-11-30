@@ -19,6 +19,16 @@ class GroqModel(str, Enum):
     LLAMA3_70B_TOOL = "llama3-groq-70b-8192-tool-use-preview"
 
 
+class DataType(str, Enum):
+    TEXT = "text"
+    CSV = "csv"
+
+
+class VideoQuality(str, Enum):
+    LOW = "low_quality"
+    MEDIUM = "medium_quality"
+
+
 class ChartType(str, Enum):
     BAR = "bar"
     COLUMN = "column"
@@ -39,9 +49,16 @@ class ManimChartType(str, Enum):
 class SVGAssets(str, Enum):
     BUSINESS_PERSON = "buisness-person.svg"
     CAR = "car.svg"
+    DUMBBELL = "dumbbell.svg"
     HOUSE_PRICE = "house-price.svg"
+    LEAVES_2 = "leaves-2.svg"
+    LEAVES_5 = "leaves-5.svg"
+    ROCKET = "rocket.svg"
     SALE = "sale.svg"
+    SNEAKERS = "sneakers.svg"
     SUPPORTING = "supporting.svg"
+    TREE_2 = "tree-2.svg"
+    WINNER_CUP = "winner-cup.svg"
 
 
 class Arrangement(str, Enum):
