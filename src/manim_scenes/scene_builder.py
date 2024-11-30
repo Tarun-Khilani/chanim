@@ -8,6 +8,9 @@ from src.config import Config
 from src.enums import Arrangement
 
 config.background_color = DARK_BLUE
+TITLE_TEXT_FONT = "Serif"
+TEXT_FONT = "Sans Serif"
+
 # Create and set up file handler
 logs_dir = Path("logs")
 logs_dir.mkdir(exist_ok=True)
@@ -21,6 +24,7 @@ file_handler = logging.FileHandler(
 file_handler.setLevel(Config.LOG_LEVEL)
 file_handler.setFormatter(file_formatter)
 logging.getLogger("manim").addHandler(file_handler)
+logger = logging.getLogger("manim")
 
 
 class InfographicBuilder(Scene):
@@ -130,7 +134,7 @@ class InfographicBuilder(Scene):
             pie.add(sector)
             pie.add(label)
             start_angle += angle
-        pie.to_edge(position)
+        self.play(pie.to_edge(position), run_time=0.5)
 
     def add_line_graph(self, position=LEFT):
         """Return a line graph."""
@@ -203,7 +207,7 @@ class InfographicBuilder(Scene):
 
     def add_svg(self, svg_file_path, animation=DrawBorderThenFill):
         """Add an SVG to the scene with animation."""
-        svg_mobject = SVGMobject(svg_file_path)
+        svg_mobject = SVGMobject(svg_file_path, use_svg_cache=False)
         if self.arrangement == Arrangement.LEFT_CHART_RIGHT_TEXT:
             svg_mobject.move_to(np.array((3.5, -1.5, 0)))
         elif self.arrangement == Arrangement.TOP_TITLE_BOTTOM_CONTENT:

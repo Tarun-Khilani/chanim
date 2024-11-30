@@ -47,7 +47,7 @@ class ManimChartType(str, Enum):
 
 
 class SVGAssets(str, Enum):
-    BUSINESS_PERSON = "buisness-person.svg"
+    BUSINESS_PERSON = "business-person.svg"
     CAR = "car.svg"
     DUMBBELL = "dumbbell.svg"
     HOUSE_PRICE = "house-price.svg"
