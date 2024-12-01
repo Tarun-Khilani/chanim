@@ -15,7 +15,7 @@ from src.config import (
     CHART_TYPE_MAPPING_MANIM,
     Config,
 )
-from src.enums import ChartType, DataType, ManimChartType, VideoQuality
+from src.enums import ChartType, DataType, ManimChartType, SVGAssets, VideoQuality
 from src.llm_factory import LLMFactory
 from src.logger import setup_logger
 from src.manim_scenes.scene_builder import InfographicBuilder
@@ -24,12 +24,15 @@ from src.models import (
     HCResponse,
     InfographicResponse,
     ManimChartResponse,
+    StoryResponse,
 )
+from src.prompts.crafter import CRAFTER_SYS_PROMPT, CRAFTER_USER_PROMPT
 from src.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
 from src.prompts.infographics import (
     INFOGRAPHICS_SYSTEM_PROMPT,
     INFOGRAPHICS_USER_PROMPT,
 )
+from src.prompts.manim_coder import M_CODER_SYS_PROMPT, M_CODER_USER_PROMPT
 from src.prompts.selection import (
     CHART_SELECTOR_SYSTEM_PROMPT,
     CHART_SELECTOR_USER_PROMPT,
@@ -104,6 +107,7 @@ class Builder:
         )
         return template
 
+    @timeit
     def _gen_chart_manim(self, data: str, chart_type: str) -> str:
         prompt = [
             {"role": "system", "content": HC_GEN_SYSTEM_PROMPT},
@@ -143,6 +147,7 @@ class Builder:
             scene.render()
         return outfile_name
 
+    @timeit
     def _gen_infographic(self, data: str, video_quality: VideoQuality) -> str:
         schema = json.dumps(_type_to_response_format(InfographicResponse), indent=2)
         prompt = [
@@ -160,7 +165,11 @@ class Builder:
         )
         outfile_name = uuid4().hex
         with tempconfig(
-            {"preview": False, "quality": video_quality.value, "output_file": outfile_name}
+            {
+                "preview": False,
+                "quality": video_quality.value,
+                "output_file": outfile_name,
+            }
         ):
             scene = InfographicBuilder(
                 title=response.title,
@@ -172,6 +181,28 @@ class Builder:
             )
             scene.render()
         return outfile_name
+
+    @timeit
+    def _craft_story(self, data: str) -> StoryResponse:
+        prompt = [
+            {"role": "system", "content": CRAFTER_SYS_PROMPT},
+            {"role": "user", "content": CRAFTER_USER_PROMPT.format(data=data)},
+        ]
+        response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
+        self.logger.info(f"Crafted story response: {response}")
+        response = StoryResponse(**json.loads(response))
+        return response
+
+    @timeit
+    def _gen_code(self, data: str) -> str:
+        assets = [asset.value for asset in SVGAssets]
+        prompt = [
+            {"role": "system", "content": M_CODER_SYS_PROMPT},
+            {"role": "user", "content": M_CODER_USER_PROMPT.format(data=data, assets=str(assets))},
+        ]
+        response = self.llm.get_response(prompt, Config.DEFAULT_LLM)
+        self.logger.info(f"Generated code response: {response}")
+        return response
 
     @timeit
     def run(

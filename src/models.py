@@ -33,3 +33,13 @@ class InfographicResponse(BaseModel):
     data: dict[str, int | float]
     asset: SVGAssets
     arrangement: Arrangement
+
+
+class StoryResponse(BaseModel):
+    class Scene(BaseModel):
+        title: str
+        visuals: str
+        animations: str
+        key_text: str
+        transitions: str
+    scenes: list[Scene]

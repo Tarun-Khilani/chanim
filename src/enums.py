@@ -7,7 +7,7 @@ class LLMType(str, Enum):
 
 
 class OpenaiModel(str, Enum):
-    GPT4O = "gpt-4o-2024-08-06"
+    GPT4O = "gpt-4o-2024-11-20"
     GPT4O_MINI = "gpt-4o-mini-2024-07-18"
 
 
