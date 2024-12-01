@@ -5,6 +5,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
@@ -46,11 +47,6 @@ class TextRequest(BaseModel):
     video_quality: VideoQuality = VideoQuality.MEDIUM
 
 
-class GenerationResponse(BaseModel):
-    status: str
-    url: str
-
-
 def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
     # Function to authenticate the user
     token = credentials.credentials
@@ -68,7 +64,7 @@ async def healthcheck():
     return {"status": "healthy"}
 
 
-@app.post("/generate/text", response_model=GenerationResponse, tags=["Infographics"])
+@app.post("/generate/text", response_class=FileResponse, tags=["Infographics"])
 async def generate_from_text(
     request: TextRequest, authenticated: bool = Depends(authenticate)
 ):
@@ -81,13 +77,13 @@ async def generate_from_text(
         )
         quality = QUALITY_MAPPING[request.video_quality]
         video_url = f"media/videos/{quality}/{result}.mp4"
-        return GenerationResponse(status="success", url=video_url)
+        return FileResponse(video_url)
     except Exception as e:
         logger.error(f"Error generating from text: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/generate/file", response_model=GenerationResponse, tags=["Infographics"])
+@app.post("/generate/file", response_class=FileResponse, tags=["Infographics"])
 async def generate_from_file(
     file: UploadFile = File(...),
     video_quality: VideoQuality = Form(VideoQuality.MEDIUM),
@@ -116,7 +112,7 @@ async def generate_from_file(
         )
         quality = QUALITY_MAPPING[video_quality]
         video_url = f"media/videos/{quality}/{result}.mp4"
-        return GenerationResponse(status="success", url=video_url)
+        return FileResponse(video_url)
     except Exception as e:
         logger.error(f"Error generating from file: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
