@@ -15,9 +15,9 @@ from src.manim_scenes.pie_chart_animation import PieChartAnimation
 class Config:
     LOG_LEVEL: str = "INFO"
 
-    DEFAULT_TEMPERATURE: float = 0.3
+    DEFAULT_TEMPERATURE: float = 0.7
     DEFAULT_LLM_PROVIDER = LLMType.GROQ
-    DEFAULT_LLM = GroqModel.LLAMA3_90B
+    DEFAULT_LLM = GroqModel.LLAMA3_70B
 
 
 QUALITY_MAPPING = {

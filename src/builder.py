@@ -22,6 +22,7 @@ from src.manim_scenes.scene_builder import InfographicBuilder
 from src.models import (
     ChartSelectorResponse,
     HCResponse,
+    InfographicAPIResponse,
     InfographicResponse,
     ManimChartResponse,
     StoryResponse,
@@ -80,7 +81,7 @@ class Builder:
         return response.chart_type
 
     @timeit
-    def _gen_chart(self, data: str, chart_type: str) -> str:
+    def _gen_chart(self, data: str, chart_type: str) -> HCResponse:
         prompt = [
             {"role": "system", "content": HC_GEN_SYSTEM_PROMPT},
             {
@@ -97,6 +98,11 @@ class Builder:
         self.logger.info(
             f"Generated chart configuration: {response.model_dump_json(indent=2)}"
         )
+        return response
+
+    @timeit
+    def _gen_chart_template(self, data: str, chart_type: str) -> str:
+        response = self._gen_chart(data, chart_type)
         template = CHART_TEMPLATE_MAPPING.get(chart_type)
         template = (
             template.replace("{title}", response.title)
@@ -148,7 +154,7 @@ class Builder:
         return outfile_name
 
     @timeit
-    def _gen_infographic(self, data: str, video_quality: VideoQuality) -> str:
+    def _gen_infographic(self, data: str) -> InfographicResponse:
         schema = json.dumps(_type_to_response_format(InfographicResponse), indent=2)
         prompt = [
             {
@@ -163,6 +169,11 @@ class Builder:
         self.logger.info(
             f"Generated infographic configuration: {response.model_dump_json(indent=2)}"
         )
+        return response
+
+    @timeit
+    def _gen_video(self, data: str, video_quality: VideoQuality) -> str:
+        response = self._gen_infographic(data)
         outfile_name = uuid4().hex
         with tempconfig(
             {
@@ -198,7 +209,10 @@ class Builder:
         assets = [asset.value for asset in SVGAssets]
         prompt = [
             {"role": "system", "content": M_CODER_SYS_PROMPT},
-            {"role": "user", "content": M_CODER_USER_PROMPT.format(data=data, assets=str(assets))},
+            {
+                "role": "user",
+                "content": M_CODER_USER_PROMPT.format(data=data, assets=str(assets)),
+            },
         ]
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM)
         self.logger.info(f"Generated code response: {response}")
@@ -212,5 +226,28 @@ class Builder:
         video_quality: VideoQuality,
     ) -> str:
         data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
-        outfile_name = self._gen_infographic(data_md, video_quality)
+        outfile_name = self._gen_video(data_md, video_quality)
         return outfile_name
+
+    @timeit
+    def run_infographic(
+        self, data: str | pd.DataFrame, data_type: DataType
+    ) -> InfographicAPIResponse:
+        data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
+        response = self._gen_infographic(data_md)
+        if response.chart_type is None:
+            return InfographicAPIResponse(
+                title=response.title,
+                insights=response.insights,
+                data=response.data,
+                asset=response.asset.value,
+            )
+        chart_response = self._gen_chart(data_md, response.chart_type.value)
+        return InfographicAPIResponse(
+            title=response.title,
+            chart_type=response.chart_type.value,
+            insights=response.insights,
+            data=response.data,
+            asset=response.asset.value,
+            highchart=chart_response,
+        )

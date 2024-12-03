@@ -13,6 +13,7 @@ from src.builder import Builder
 from src.config import QUALITY_MAPPING
 from src.enums import DataType, VideoQuality
 from src.logger import setup_logger
+from src.models import InfographicAPIResponse
 
 # Load environment variables
 load_dotenv()
@@ -44,7 +45,7 @@ builder = Builder()
 
 class TextRequest(BaseModel):
     text: str
-    video_quality: VideoQuality = VideoQuality.MEDIUM
+    # video_quality: VideoQuality = VideoQuality.MEDIUM
 
 
 def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -64,29 +65,78 @@ async def healthcheck():
     return {"status": "healthy"}
 
 
-@app.post("/generate/text", response_class=FileResponse, tags=["Infographics"])
+# @app.post("/generate/text", response_class=FileResponse, tags=["Infographics"])
+# async def generate_from_text(
+#     request: TextRequest, authenticated: bool = Depends(authenticate)
+# ):
+#     """Generate infographic video from text input"""
+#     try:
+#         result = builder.run(
+#             data=request.text,
+#             data_type=DataType.TEXT,
+#             video_quality=request.video_quality,
+#         )
+#         quality = QUALITY_MAPPING[request.video_quality]
+#         video_url = f"media/videos/{quality}/{result}.mp4"
+#         return FileResponse(video_url)
+#     except Exception as e:
+#         logger.error(f"Error generating from text: {str(e)}")
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
+# @app.post("/generate/file", response_class=FileResponse, tags=["Infographics"])
+# async def generate_from_file(
+#     file: UploadFile = File(...),
+#     video_quality: VideoQuality = Form(VideoQuality.MEDIUM),
+#     authenticated: bool = Depends(authenticate),
+# ):
+#     """Generate infographic video from file input"""
+#     try:
+#         file_extension = file.filename.split(".")[-1].lower()
+#         if file_extension not in ["csv", "txt"]:
+#             raise HTTPException(
+#                 status_code=400, detail="Only CSV and TXT files are supported"
+#             )
+
+#         content = await file.read()
+
+#         if file_extension == "csv":
+#             df = pd.read_csv(io.StringIO(content.decode()))
+#             data = df
+#             data_type = DataType.CSV
+#         else:
+#             data = content.decode()
+#             data_type = DataType.TEXT
+
+#         result = builder.run(
+#             data=data, data_type=data_type, video_quality=video_quality
+#         )
+#         quality = QUALITY_MAPPING[video_quality]
+#         video_url = f"media/videos/{quality}/{result}.mp4"
+#         return FileResponse(video_url)
+#     except Exception as e:
+#         logger.error(f"Error generating from file: {str(e)}")
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/generate/text", response_model=InfographicAPIResponse, tags=["Infographics"])
 async def generate_from_text(
     request: TextRequest, authenticated: bool = Depends(authenticate)
 ):
     """Generate infographic video from text input"""
     try:
-        result = builder.run(
+        result = builder.run_infographic(
             data=request.text,
             data_type=DataType.TEXT,
-            video_quality=request.video_quality,
         )
-        quality = QUALITY_MAPPING[request.video_quality]
-        video_url = f"media/videos/{quality}/{result}.mp4"
-        return FileResponse(video_url)
+        return result
     except Exception as e:
         logger.error(f"Error generating from text: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@app.post("/generate/file", response_class=FileResponse, tags=["Infographics"])
+@app.post("/generate/file", response_model=InfographicAPIResponse, tags=["Infographics"])
 async def generate_from_file(
     file: UploadFile = File(...),
-    video_quality: VideoQuality = Form(VideoQuality.MEDIUM),
     authenticated: bool = Depends(authenticate),
 ):
     """Generate infographic video from file input"""
@@ -107,12 +157,10 @@ async def generate_from_file(
             data = content.decode()
             data_type = DataType.TEXT
 
-        result = builder.run(
-            data=data, data_type=data_type, video_quality=video_quality
+        result = builder.run_infographic(
+            data=data, data_type=data_type
         )
-        quality = QUALITY_MAPPING[video_quality]
-        video_url = f"media/videos/{quality}/{result}.mp4"
-        return FileResponse(video_url)
+        return result
     except Exception as e:
         logger.error(f"Error generating from file: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -43,3 +43,12 @@ class StoryResponse(BaseModel):
         key_text: str
         transitions: str
     scenes: list[Scene]
+
+
+class InfographicAPIResponse(BaseModel):
+    title: str
+    chart_type: ManimChartType | None = None
+    insights: list[str]
+    data: dict[str, int | float]
+    asset: SVGAssets
+    highchart: HCResponse | None = None
