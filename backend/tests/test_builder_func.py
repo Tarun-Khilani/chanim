@@ -1,4 +1,4 @@
-from src.builder import Builder
+from app.builder import Builder
 
 
 def test_crafter():

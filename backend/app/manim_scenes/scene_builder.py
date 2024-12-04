@@ -4,12 +4,12 @@ from pathlib import Path
 
 from manim import *
 
-from src.config import Config
-from src.enums import Arrangement
+from app.config import Config
+from app.enums import Arrangement
 
 config.background_color = DARK_BLUE
-TITLE_TEXT_FONT = "Serif"
-TEXT_FONT = "Sans Serif"
+TITLE_TEXT_FONT = "Georgia"
+TEXT_FONT = "Georgia"
 
 # Create and set up file handler
 logs_dir = Path("logs")

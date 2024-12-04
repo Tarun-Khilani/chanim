@@ -8,8 +8,8 @@ from openinference.instrumentation.groq import GroqInstrumentor
 from openinference.instrumentation.openai import OpenAIInstrumentor
 from phoenix.otel import register
 
-from src.config import Config
-from src.enums import LLMType
+from app.config import Config
+from app.enums import LLMType
 
 load_dotenv()
 

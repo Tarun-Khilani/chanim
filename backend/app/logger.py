@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from src.config import Config
+from app.config import Config
 
 def setup_logger(name: str) -> logging.Logger:
     """Set up a logger with both file and stream handlers."""

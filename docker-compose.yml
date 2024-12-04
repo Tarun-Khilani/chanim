@@ -7,17 +7,17 @@ services:
     environment:
       - PHOENIX_WORKING_DIR=/mnt/data
     volumes:
-      - ./phoenix_data:/mnt/data
+      - ./backend/phoenix_data:/mnt/data
 
-  api:
+  backend:
     build: 
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
-      - ./media:/app/media
+      - ./backend:/app
+      - ./backend/media:/app/media
     environment:
       - PYTHONUNBUFFERED=1
       - API_AUTH_KEY=${API_AUTH_KEY}

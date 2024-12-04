@@ -1,11 +1,11 @@
 import pandas as pd
 import streamlit as st
-from dotenv import load_dotenv
 
-from src.builder import Builder
-from src.config import QUALITY_MAPPING
-from src.enums import DataType, VideoQuality
-from src.logger import setup_logger
+from app.builder import Builder
+from app.config import QUALITY_MAPPING
+from app.enums import DataType, VideoQuality
+from app.logger import setup_logger
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -25,7 +25,7 @@ if "result" not in st.session_state:
 st.set_page_config(
     page_title="Chanim", page_icon=":chart_with_upwards_trend:", layout="centered"
 )
-st.image("public/logo.jpeg", use_container_width=True)
+st.image("app/public/logo.jpeg", use_container_width=True)
 st.title("Dynamic Infographics Generator")
 
 

@@ -29,6 +29,7 @@ logs/
 media/
 sample_data/
 phoenix_data/
+tests/
 
 # Docker
 .docker

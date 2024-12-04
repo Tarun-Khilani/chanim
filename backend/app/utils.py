@@ -1,7 +1,7 @@
 import functools
 import time
 
-from src.logger import setup_logger
+from app.logger import setup_logger
 
 logger = setup_logger(__name__)
 

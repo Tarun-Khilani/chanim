@@ -9,11 +9,11 @@ from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
-from src.builder import Builder
-from src.config import QUALITY_MAPPING
-from src.enums import DataType, VideoQuality
-from src.logger import setup_logger
-from src.models import InfographicAPIResponse
+from app.builder import Builder
+from app.config import QUALITY_MAPPING
+from app.enums import DataType, VideoQuality
+from app.logger import setup_logger
+from app.models import InfographicAPIResponse
 
 # Load environment variables
 load_dotenv()
@@ -169,4 +169,4 @@ async def generate_from_file(
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("api:app", host="0.0.0.0", port=8000)
+    uvicorn.run("fastapi_app:app", host="0.0.0.0", port=8000)

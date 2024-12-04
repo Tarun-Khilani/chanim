@@ -32,4 +32,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 ENTRYPOINT []
 
 # Run the application
-CMD ["python3", "api.py"]
+CMD ["python3", "fastapi_app.py"]

@@ -8,18 +8,18 @@ from openai.lib._parsing import (
     type_to_response_format_param as _type_to_response_format,
 )
 
-from src.config import (
+from app.config import (
     CHART_SCENE_MAPPING,
     CHART_TEMPLATE_MAPPING,
     CHART_TYPE_MAPPING,
     CHART_TYPE_MAPPING_MANIM,
     Config,
 )
-from src.enums import ChartType, DataType, ManimChartType, SVGAssets, VideoQuality
-from src.llm_factory import LLMFactory
-from src.logger import setup_logger
-from src.manim_scenes.scene_builder import InfographicBuilder
-from src.models import (
+from app.enums import ChartType, DataType, ManimChartType, SVGAssets, VideoQuality
+from app.llm_factory import LLMFactory
+from app.logger import setup_logger
+from app.manim_scenes.scene_builder import InfographicBuilder
+from app.models import (
     ChartSelectorResponse,
     HCResponse,
     InfographicAPIResponse,
@@ -27,22 +27,22 @@ from src.models import (
     ManimChartResponse,
     StoryResponse,
 )
-from src.prompts.crafter import CRAFTER_SYS_PROMPT, CRAFTER_USER_PROMPT
-from src.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
-from src.prompts.infographics import (
+from app.prompts.crafter import CRAFTER_SYS_PROMPT, CRAFTER_USER_PROMPT
+from app.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
+from app.prompts.infographics import (
     INFOGRAPHICS_SYSTEM_PROMPT,
     INFOGRAPHICS_USER_PROMPT,
 )
-from src.prompts.manim_coder import M_CODER_SYS_PROMPT, M_CODER_USER_PROMPT
-from src.prompts.selection import (
+from app.prompts.manim_coder import M_CODER_SYS_PROMPT, M_CODER_USER_PROMPT
+from app.prompts.selection import (
     CHART_SELECTOR_SYSTEM_PROMPT,
     CHART_SELECTOR_USER_PROMPT,
 )
-from src.prompts.txt_extraction import (
+from app.prompts.txt_extraction import (
     TXT_EXTRACT_SYSTEM_PROMPT,
     TXT_EXTRACT_USER_PROMPT,
 )
-from src.utils import timeit
+from app.utils import timeit
 
 
 class Builder:

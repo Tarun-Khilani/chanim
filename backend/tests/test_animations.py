@@ -1,9 +1,9 @@
+from app.enums import Arrangement, SVGAssets
+from app.manim_scenes.bar_chart_animation import BarChartAnimation
+from app.manim_scenes.line_chart_animation import LineChartAnimation
+from app.manim_scenes.pie_chart_animation import PieChartAnimation
+from app.manim_scenes.scene_builder import InfographicBuilder
 from manim import *
-from src.enums import Arrangement, SVGAssets
-from src.manim_scenes.bar_chart_animation import BarChartAnimation
-from src.manim_scenes.line_chart_animation import LineChartAnimation
-from src.manim_scenes.pie_chart_animation import PieChartAnimation
-from src.manim_scenes.scene_builder import InfographicBuilder
 
 
 def test_bar_chart():

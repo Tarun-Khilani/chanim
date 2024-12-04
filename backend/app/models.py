@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.enums import Arrangement, ChartType, ManimChartType, SVGAssets
+from app.enums import Arrangement, ChartType, ManimChartType, SVGAssets
 
 
 class ChartSelectorResponse(BaseModel):

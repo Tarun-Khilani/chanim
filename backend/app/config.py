@@ -1,5 +1,5 @@
-from src.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
-from src.enums import (
+from app.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
+from app.enums import (
     ChartType,
     GroqModel,
     LLMType,
@@ -7,9 +7,9 @@ from src.enums import (
     OpenaiModel,
     VideoQuality,
 )
-from src.manim_scenes.bar_chart_animation import BarChartAnimation
-from src.manim_scenes.line_chart_animation import LineChartAnimation
-from src.manim_scenes.pie_chart_animation import PieChartAnimation
+from app.manim_scenes.bar_chart_animation import BarChartAnimation
+from app.manim_scenes.line_chart_animation import LineChartAnimation
+from app.manim_scenes.pie_chart_animation import PieChartAnimation
 
 
 class Config:
