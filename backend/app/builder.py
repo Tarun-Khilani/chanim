@@ -15,7 +15,14 @@ from app.config import (
     CHART_TYPE_MAPPING_MANIM,
     Config,
 )
-from app.enums import ChartType, DataType, ManimChartType, SVGAssets, VideoQuality
+from app.enums import (
+    ChartType,
+    DataType,
+    ManimChartType,
+    SVGAssets,
+    VideoQuality,
+    RendererType,
+)
 from app.llm_factory import LLMFactory
 from app.logger import setup_logger
 from app.manim_scenes.scene_builder import InfographicBuilder
@@ -23,6 +30,7 @@ from app.models import (
     ChartSelectorResponse,
     HCResponse,
     InfographicAPIResponse,
+    InfographicRemotionResponse,
     InfographicResponse,
     ManimChartResponse,
     StoryResponse,
@@ -155,8 +163,17 @@ class Builder:
         return outfile_name
 
     @timeit
-    def _gen_infographic(self, data: str) -> InfographicResponse:
-        schema = json.dumps(_type_to_response_format(InfographicResponse), indent=2)
+    def _gen_infographic(
+        self, data: str, renderer_type: RendererType
+    ) -> InfographicResponse | InfographicRemotionResponse:
+        schema = json.dumps(
+            _type_to_response_format(
+                InfographicResponse
+                if renderer_type == RendererType.MANIM
+                else InfographicRemotionResponse
+            ),
+            indent=2,
+        )
         prompt = [
             {
                 "role": "system",
@@ -166,7 +183,11 @@ class Builder:
         ]
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
         self.logger.info(f"Generated infographic response: {response}")
-        response = InfographicResponse(**json.loads(response))
+        response = (
+            InfographicResponse(**json.loads(response))
+            if renderer_type == RendererType.MANIM
+            else InfographicRemotionResponse(**json.loads(response))
+        )
         self.logger.info(
             f"Generated infographic configuration: {response.model_dump_json(indent=2)}"
         )
@@ -174,7 +195,7 @@ class Builder:
 
     @timeit
     def _gen_video(self, data: str, video_quality: VideoQuality) -> str:
-        response = self._gen_infographic(data)
+        response = self._gen_infographic(data, RendererType.MANIM)
         outfile_name = uuid4().hex
         with tempconfig(
             {
@@ -218,7 +239,7 @@ class Builder:
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM)
         self.logger.info(f"Generated code response: {response}")
         return response
-    
+
     @timeit
     def _gen_code_remotion(self, data: str) -> str:
         assets = [asset.value for asset in SVGAssets]
@@ -250,22 +271,14 @@ class Builder:
         self, data: str | pd.DataFrame, data_type: DataType
     ) -> InfographicAPIResponse:
         data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
-        response = self._gen_infographic(data_md)
-        if response.chart_type is None:
-            return InfographicAPIResponse(
-                title=response.title,
-                insights=response.insights,
-                data=response.data,
-                asset=response.asset.value,
-            )
-        chart_response = self._gen_chart(data_md, response.chart_type.value)
+        response = self._gen_infographic(data_md, RendererType.REMOTION)
         return InfographicAPIResponse(
             title=response.title,
             chart_type=response.chart_type.value,
             insights=response.insights,
-            data=response.data,
+            data=[d.model_dump() for d in response.data],
             asset=response.asset.value,
-            highchart=chart_response,
+            arrangement=response.arrangement.value,
         )
 
     @timeit

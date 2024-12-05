@@ -46,6 +46,14 @@ class ManimChartType(str, Enum):
     PIE = "pie"
 
 
+class RemotionChartType(str, Enum):
+    BAR = "bar"
+    COLUMN = "column"
+    PIE = "pie"
+    STACKED_BAR = "stacked_bar"
+    GROUPED_BAR = "grouped_bar"
+
+
 class SVGAssets(str, Enum):
     BUSINESS_PERSON = "business-person.svg"
     CAR = "car.svg"
@@ -66,3 +74,8 @@ class Arrangement(str, Enum):
     RIGHT_CHART_LEFT_TEXT = "RIGHT_CHART_LEFT_TEXT"
     TOP_TITLE_BOTTOM_CONTENT = "TOP_TITLE_BOTTOM_CONTENT"
     CHART_CENTER_TEXT_BELOW = "CHART_CENTER_TEXT_BELOW"
+
+
+class RendererType(str, Enum):
+    MANIM = "manim"
+    REMOTION = "remotion"

@@ -1,6 +1,12 @@
 from pydantic import BaseModel
 
-from app.enums import Arrangement, ChartType, ManimChartType, SVGAssets
+from app.enums import (
+    Arrangement,
+    ChartType,
+    ManimChartType,
+    SVGAssets,
+    RemotionChartType,
+)
 
 
 class ChartSelectorResponse(BaseModel):
@@ -35,6 +41,22 @@ class InfographicResponse(BaseModel):
     arrangement: Arrangement
 
 
+class InfographicRemotionResponse(BaseModel):
+    class BarPieLineData(BaseModel):
+        key: str
+        value: int | float
+    class GroupedStackedData(BaseModel):
+        key: str
+        values: list[dict[str, int | float]]
+    reasoning: list[str]
+    title: str
+    chart_type: RemotionChartType | None
+    insights: list[str]
+    data: list[BarPieLineData | GroupedStackedData]
+    asset: SVGAssets
+    arrangement: Arrangement
+
+
 class StoryResponse(BaseModel):
     class Scene(BaseModel):
         title: str
@@ -42,13 +64,20 @@ class StoryResponse(BaseModel):
         animations: str
         key_text: str
         transitions: str
+
     scenes: list[Scene]
 
 
 class InfographicAPIResponse(BaseModel):
+    class BarPieLineData(BaseModel):
+        key: str
+        value: int | float
+    class GroupedStackedData(BaseModel):
+        key: str
+        values: list[dict[str, int | float]]
     title: str
-    chart_type: ManimChartType | None = None
+    chart_type: RemotionChartType | None = None
     insights: list[str]
-    data: dict[str, int | float]
+    data: list[BarPieLineData | GroupedStackedData]
     asset: SVGAssets
-    highchart: HCResponse | None = None
+    arrangement: Arrangement

@@ -4,10 +4,9 @@ Be creative and design the best Infographics based on the data provided.
 STRICTLY FOLLOW THE INPUT SCHEMA FOR JSON OUTPUT.
 
 <INSTURCTIONS>
-
 1. Begin by thinking about what would be the best way to represent the data in an infographic.
 2. Identify the most appropriate Title for the infographic.
-3. Decide whether you want to include a chart or not.
+3. Decide whether you want to include a chart or not. Use percentage for pie chart.
 4. Identify the insights from the data and the order in which they should be presented. KEEP EACH INSIGHT CONCISE AND USE NUMBERS IF APPLICABLE (Max 50 characters). Identify standout patterns or key comparisons in data and phrase them concisely with action words and emphasis on results.
 5. Extract the data if chart is required.
 6. Select the suitable asset for the infographic.
