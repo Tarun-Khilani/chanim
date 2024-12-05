@@ -65,8 +65,8 @@ async def healthcheck():
     return {"status": "healthy"}
 
 
-@app.post("/generate/text", response_class=FileResponse, tags=["Infographics"])
-async def generate_from_text(
+@app.post("/gen-text/manim-video", response_class=FileResponse, tags=["Infographics"])
+async def generate_from_text_manim(
     request: TextRequest, authenticated: bool = Depends(authenticate)
 ):
     """Generate infographic video from text input"""
@@ -84,8 +84,8 @@ async def generate_from_text(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/generate/file", response_class=FileResponse, tags=["Infographics"])
-async def generate_from_file(
+@app.post("/gen-file/manim-video", response_class=FileResponse, tags=["Infographics"])
+async def generate_from_file_manim(
     file: UploadFile = File(...),
     # video_quality: VideoQuality = Form(VideoQuality.MEDIUM),
     authenticated: bool = Depends(authenticate),
@@ -119,51 +119,51 @@ async def generate_from_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# @app.post("/generate/text", response_model=InfographicAPIResponse, tags=["Infographics"])
-# async def generate_from_text(
-#     request: TextRequest, authenticated: bool = Depends(authenticate)
-# ):
-#     """Generate infographic video from text input"""
-#     try:
-#         result = builder.run_infographic(
-#             data=request.text,
-#             data_type=DataType.TEXT,
-#         )
-#         return result
-#     except Exception as e:
-#         logger.error(f"Error generating from text: {str(e)}")
-#         raise HTTPException(status_code=500, detail=str(e))
+@app.post("/gen-text/infographic", response_model=InfographicAPIResponse, tags=["Infographics"])
+async def generate_from_text(
+    request: TextRequest, authenticated: bool = Depends(authenticate)
+):
+    """Generate infographic video from text input"""
+    try:
+        result = builder.run_infographic(
+            data=request.text,
+            data_type=DataType.TEXT,
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Error generating from text: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-# @app.post("/generate/file", response_model=InfographicAPIResponse, tags=["Infographics"])
-# async def generate_from_file(
-#     file: UploadFile = File(...),
-#     authenticated: bool = Depends(authenticate),
-# ):
-#     """Generate infographic video from file input"""
-#     try:
-#         file_extension = file.filename.split(".")[-1].lower()
-#         if file_extension not in ["csv", "txt"]:
-#             raise HTTPException(
-#                 status_code=400, detail="Only CSV and TXT files are supported"
-#             )
+@app.post("/gen-file/infographic", response_model=InfographicAPIResponse, tags=["Infographics"])
+async def generate_from_file(
+    file: UploadFile = File(...),
+    authenticated: bool = Depends(authenticate),
+):
+    """Generate infographic video from file input"""
+    try:
+        file_extension = file.filename.split(".")[-1].lower()
+        if file_extension not in ["csv", "txt"]:
+            raise HTTPException(
+                status_code=400, detail="Only CSV and TXT files are supported"
+            )
 
-#         content = await file.read()
+        content = await file.read()
 
-#         if file_extension == "csv":
-#             df = pd.read_csv(io.StringIO(content.decode()))
-#             data = df
-#             data_type = DataType.CSV
-#         else:
-#             data = content.decode()
-#             data_type = DataType.TEXT
+        if file_extension == "csv":
+            df = pd.read_csv(io.StringIO(content.decode()))
+            data = df
+            data_type = DataType.CSV
+        else:
+            data = content.decode()
+            data_type = DataType.TEXT
 
-#         result = builder.run_infographic(
-#             data=data, data_type=data_type
-#         )
-#         return result
-#     except Exception as e:
-#         logger.error(f"Error generating from file: {str(e)}")
-#         raise HTTPException(status_code=500, detail=str(e))
+        result = builder.run_infographic(
+            data=data, data_type=data_type
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Error generating from file: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":

@@ -8,13 +8,7 @@ export default function InfographicsGenerator() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [title, setTitle] = useState<string>('');
-  const [chartType, setChartType] = useState<string>('');
-  const [insights, setInsights] = useState<string>('');
-  const [data, setData] = useState<string>('');
-  const [asset, setAsset] = useState<string>('');
 
-  // Old implementation
   const handleTextSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -39,30 +33,6 @@ export default function InfographicsGenerator() {
     }
   };
 
-  // const handleTextSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const response = await generateFromText(text);
-  //     const responseData = await response.json();
-      
-  //     // Update the state based on the InfographicResponse
-  //     setTitle(responseData.title);
-  //     setChartType(responseData.chart_type);
-  //     setInsights(responseData.insights);
-  //     setData(responseData.data);
-  //     setAsset(responseData.asset);
-      
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : 'An error occurred');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // Old implementation
   const handleFileSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
@@ -86,31 +56,6 @@ export default function InfographicsGenerator() {
       setLoading(false);
     }
   };
-
-  // const handleFileSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   if (!file) return;
-
-  //   setLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const response = await generateFromFile(file);
-  //     const responseData = await response.json();
-      
-  //     // Update the state based on the InfographicResponse
-  //     setTitle(responseData.title);
-  //     setChartType(responseData.chart_type);
-  //     setInsights(responseData.insights);
-  //     setData(responseData.data);
-  //     setAsset(responseData.asset);
-      
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : 'An error occurred');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
