@@ -3,8 +3,8 @@ import "../styles/custom.css";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Remotion and Next.js",
-  description: "Remotion and Next.js",
+  title: "Chanim",
+  description: "Chanim - AI powered infographic generator",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
