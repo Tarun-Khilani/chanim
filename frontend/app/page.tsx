@@ -3,7 +3,6 @@
 import { Player } from "@remotion/player";
 import type { NextPage } from "next";
 import React, { useMemo, useState } from "react";
-import { LayoutOne } from "../remotion/Video/layout/LayoutOne";
 import {
   CompositionProps,
   defaultVideoProps,
@@ -15,8 +14,10 @@ import {
 import { z } from "zod";
 import { RenderControls } from "../components/RenderControls";
 import InfographicsGenerator from "./components/InfographicsGenerator";
+import { LayoutOne } from "../remotion/Video/layout/LayoutOne";
 import { LayoutTwo } from "../remotion/Video/layout/LayoutTwo";
 import { LayoutThree } from "../remotion/Video/layout/LayoutThree";
+import { LayoutFour } from "../remotion/Video/layout/LayoutFour";
 
 const Home: NextPage = () => {
   const [text, setText] = useState<string>(defaultVideoProps.title.text);
