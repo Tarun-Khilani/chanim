@@ -41,9 +41,9 @@ const Home: NextPage = () => {
   }, [text]);
 
   return (
-    <div className="flex min-h-screen bg-[#0F1218]">
-      <div className="flex-1 p-8">
-        <div className="overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)] mb-10">
+    <div className="fixed inset-0 flex bg-[#0F1218]">
+      <div className="flex-1 h-full overflow-hidden p-8 flex flex-col">
+        <div className="flex-1 overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)]">
           <Player
             component={LayoutOne}
             inputProps={inputProps}
@@ -53,19 +53,22 @@ const Home: NextPage = () => {
             compositionWidth={VIDEO_WIDTH}
             style={{
               width: "100%",
+              height: "100%",
             }}
             controls
             autoPlay
             loop
           />
         </div>
-        <RenderControls
-          text={text}
-          setText={setText}
-          inputProps={inputProps}
-        />
+        <div className="mt-2">
+          <RenderControls
+            text={text}
+            setText={setText}
+            inputProps={inputProps}
+          />
+        </div>
       </div>
-      <div className="w-[400px] border-l border-gray-800">
+      <div className="w-[400px] border-l border-gray-800 h-full overflow-hidden">
         <InfographicsGenerator />
       </div>
     </div>
