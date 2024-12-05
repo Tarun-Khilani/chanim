@@ -22,7 +22,8 @@ def setup_logger(name: str) -> logging.Logger:
     logs_dir.mkdir(exist_ok=True)
     
     file_handler = logging.FileHandler(
-        logs_dir / f"chanim_{datetime.now().strftime('%Y%m%d')}.log"
+        logs_dir / f"chanim_{datetime.now().strftime('%Y%m%d')}.log",
+        encoding="utf-8",
     )
     file_handler.setLevel(Config.LOG_LEVEL)
     file_handler.setFormatter(file_formatter)
