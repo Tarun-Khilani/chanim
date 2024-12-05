@@ -1,6 +1,7 @@
 from app.chart_schemas import HCHTMLTemplate, HCSchemas, ManimChartSchemas
 from app.enums import (
     ChartType,
+    GithubModel,
     GroqModel,
     LLMType,
     ManimChartType,
@@ -18,6 +19,8 @@ class Config:
     DEFAULT_TEMPERATURE: float = 0.7
     DEFAULT_LLM_PROVIDER = LLMType.GROQ
     DEFAULT_LLM = GroqModel.LLAMA3_70B
+
+    DEFAULT_FE_ASSET_PATH: str = "public/icons/"
 
 
 QUALITY_MAPPING = {

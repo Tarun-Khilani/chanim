@@ -4,6 +4,7 @@ from enum import Enum
 class LLMType(str, Enum):
     OPENAI = "openai"
     GROQ = "groq"
+    GITHUB = "github"
 
 
 class OpenaiModel(str, Enum):
@@ -17,6 +18,11 @@ class GroqModel(str, Enum):
     LLAMA3_11B = "llama-3.2-11b-vision-preview"
     LLAMA3_90B = "llama-3.2-90b-vision-preview"
     LLAMA3_70B_TOOL = "llama3-groq-70b-8192-tool-use-preview"
+
+
+class GithubModel(str, Enum):
+    GPT4O = "gpt-4o"
+    GPT4O_MINI = "gpt-4o-mini"
 
 
 class DataType(str, Enum):

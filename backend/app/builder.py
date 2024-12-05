@@ -247,7 +247,11 @@ class Builder:
             {"role": "system", "content": R_CODER_SYS_PROMPT},
             {
                 "role": "user",
-                "content": R_CODER_USER_PROMPT.format(data=data, assets=str(assets)),
+                "content": R_CODER_USER_PROMPT.format(
+                    data=data,
+                    asset_path=Config.DEFAULT_FE_ASSET_PATH,
+                    assets=str(assets),
+                ),
             },
         ]
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM)

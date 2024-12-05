@@ -301,7 +301,361 @@ export const MyComp: React.FC = () => {
     },
   });
   return <div>Frame {frame}: {value}</div>;
-};"""
+};
+
+These are user crafted components used for the Infographic animation. Use them for reference only.
+Do not try to replicate them or import them. Use them as inspiration.
+
+<TextFade>
+import React, { useMemo } from "react";
+import {
+  AbsoluteFill,
+  interpolate,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+
+export const TextFade: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  const { fps } = useVideoConfig();
+  const frame = useCurrentFrame();
+
+  const progress = spring({
+    fps,
+    frame,
+    config: {
+      damping: 200,
+    },
+    durationInFrames: 80,
+  });
+
+  const rightStop = interpolate(progress, [0, 1], [200, 0]);
+
+  const leftStop = Math.max(0, rightStop - 60);
+
+  const maskImage = `linear-gradient(-45deg, transparent ${leftStop}%, black ${rightStop}%)`;
+
+  const content: React.CSSProperties = useMemo(() => {
+    return {
+      maskImage,
+      WebkitMaskImage: maskImage,
+      position: "absolute",
+      top: 20,
+      left: 30,
+    };
+  }, [maskImage]);
+
+  return (
+    <AbsoluteFill>
+      <div style={content}>{children}</div>
+    </AbsoluteFill>
+  );
+};
+</TextFade>
+
+<TextSlide>
+import React, { useMemo } from "react";
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+
+export const TextSlide: React.FC<{
+  children: React.ReactNode;
+  direction: "left" | "right" | "up" | "down";
+}> = ({ children, direction }) => {
+  const { fps, width, height } = useVideoConfig();
+  const frame = useCurrentFrame();
+
+  const progress = spring({
+    fps,
+    frame,
+    config: {
+      damping: 200,
+    },
+    durationInFrames: 60,
+  });
+
+  const slideAnimation = useMemo(() => {
+    const distance =
+      direction === "left" || direction === "right" ? width : height;
+    const start =
+      direction === "right" || direction === "down" ? -distance : distance;
+    const end = 0;
+
+    const translateValue = interpolate(progress, [0, 1], [start, end], {
+      easing: Easing.inOut(Easing.quad),
+    });
+
+    switch (direction) {
+      case "left":
+      case "right":
+        return { transform: `translateX(${translateValue}px)` };
+      case "up":
+      case "down":
+        return { transform: `translateY(${translateValue}px)` };
+    }
+  }, [direction, progress, width, height]);
+
+  const content: React.CSSProperties = useMemo(() => {
+    return {
+      ...slideAnimation,
+      position: "absolute",
+      top: 20,
+      left: 40,
+    };
+  }, [slideAnimation]);
+
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill className="justify-center items-center">
+        <div style={content}>{children}</div>
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+</TextSlide>
+
+<TextLetter>
+import React from "react";
+import {
+  AbsoluteFill,
+  interpolate,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+
+export const TextLetter: React.FC<{
+  insights: string[];
+  color: string;
+  font?: string;
+  style?: React.CSSProperties;
+}> = ({ insights, color, font = "Arial", style = {} }) => {
+  const frame = useCurrentFrame();
+  const { fps, width } = useVideoConfig();
+
+  // Keep track of cumulative letter index for animation delay
+  let cumulativeLetterIndex = 0;
+
+  return (
+    <AbsoluteFill style={style}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          paddingLeft: "2rem",
+          paddingRight: "2rem",
+          fontFamily: font,
+          width: '100%',
+          maxWidth: '600px',
+        }}
+      >
+        {insights.map((text, lineIndex) => {
+          const words = text.split(" ");
+          return (
+            <p
+              key={lineIndex}
+              style={{
+                fontSize: "24px",
+                marginBottom: "1.5rem",
+                lineHeight: 1.4,
+                color,
+                opacity: 0.9,
+              }}
+            >
+              {words.map((word, wordIndex) => {
+                const letters = word.split("");
+                return (
+                  <React.Fragment key={wordIndex}>
+                    {letters.map((letter, letterIndex) => {
+                      cumulativeLetterIndex++;
+                      const delay = cumulativeLetterIndex * 1.5;
+                      const progress = spring({
+                        frame: frame - delay,
+                        fps,
+                        config: {
+                          damping: 200,
+                        },
+                      });
+
+                      const opacity = interpolate(progress, [0, 1], [0, 1]);
+                      const translateY = interpolate(
+                        progress,
+                        [0, 1],
+                        [20, 0]
+                      );
+
+                      return (
+                        <span
+                          key={letterIndex}
+                          style={{
+                            display: "inline-block",
+                            opacity,
+                            transform: `translateY(${translateY}px)`,
+                          }}
+                        >
+                          {letter}
+                        </span>
+                      );
+                    })}
+                    {wordIndex !== words.length - 1 ? " " : ""}
+                  </React.Fragment>
+                );
+              })}
+            </p>
+          );
+        })}
+      </div>
+    </AbsoluteFill>
+  );
+};
+</TextLetter>
+
+<Chart>
+import { z } from "zod";
+import { LineChart, BarChart, PieChart } from "../../../components/VictoryChart";
+import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import React from "react";
+
+export const chartSchema = z.object({
+  data: z.array(z.object({
+    key: z.string(),
+    data: z.number()
+  })),
+  color: z.string(),
+  backgroundColor: z.string()
+});
+
+export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ data, color, backgroundColor }) => {
+  const { width: videoWidth, fps } = useVideoConfig();
+  const frame = useCurrentFrame();
+  
+  // Make chart responsive but slightly smaller for better layout
+  const chartWidth = Math.min(videoWidth * 0.4, 700);
+  const chartHeight = chartWidth * 0.6;
+
+  // Animation progress
+  const progress = spring({
+    fps,
+    frame,
+    config: {
+      damping: 100,
+    },
+    durationInFrames: 30,
+  });
+
+  // Scale and opacity animation
+  const scale = interpolate(progress, [0, 1], [0.7, 1]);
+  const opacity = interpolate(progress, [0, 1], [0, 1]);
+  const translateY = interpolate(progress, [0, 1], [50, 0]);
+
+  return (
+    <div 
+      style={{
+        transform: `scale(${scale}) translateY(${translateY}px)`,
+        opacity,
+        transformOrigin: 'center',
+      }}
+      className="origin-center"
+    >
+      <LineChart 
+        data={data} 
+        color={color} 
+        backgroundColor={backgroundColor}
+        width={chartWidth}
+        height={chartHeight}
+      />
+    </div>
+  );
+};
+</Chart>
+
+<LayoutOne>
+import { z } from "zod";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { CompositionProps } from "../../../types/constants";
+import { loadFont, fontFamily } from "@remotion/google-fonts/Inter";
+import React from "react";
+import { TextFade } from "../text/TextFade";
+import { TextSlide } from "../text/TextSlide";
+import { Chart } from "../chart/Chart";
+import { TextLetter } from "../text/TextLetter";
+
+loadFont();
+
+export const LayoutOne = ({
+  title,
+  backgroundColor,
+  chart,
+  insights,
+}: z.infer<typeof CompositionProps>) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  const TextComponent = title.animation === "fade" ? TextFade : TextSlide;
+
+  const getSlideDirection = () => {
+    switch (title.animation) {
+      case "slide-left":
+        return "right";
+      case "slide-right":
+        return "left";
+      case "slide-up":
+        return "down";
+      case "slide-down":
+        return "up";
+      default:
+        return "left";
+    }
+  };
+
+  return (
+    <AbsoluteFill style={{ backgroundColor }}>
+      <TextComponent
+        direction={title.animation !== "fade" ? getSlideDirection() : "left"}
+      >
+        <h1
+          className="text-[70px] font-bold"
+          style={{
+            fontFamily,
+            color: title.color,
+          }}
+        >
+          {title.text}
+        </h1>
+      </TextComponent>
+
+      {/* Chart Section */}
+      <AbsoluteFill style={{ top: '30%' }}>
+        <div className="flex justify-between items-start px-12">
+          {/* Left side - Chart */}
+          <div className="w-1/2">
+            <Chart data={chart.data} color={chart.color} backgroundColor={chart.backgroundColor} />
+          </div>
+        </div>
+      </AbsoluteFill>
+
+      {/* Right side - Insights */}
+      <TextLetter 
+        insights={insights} 
+        color={title.color}
+        font={fontFamily}
+        style={{ left: '50%', top: '30%', width: '50%' }}
+      />
+    </AbsoluteFill>
+  );
+};
+</LayoutOne>
+"""
 
 R_CODER_USER_PROMPT = """\
 Generate an Infographic animation using Remotion components based on the provided data.
@@ -313,17 +667,25 @@ Generate an Infographic animation using Remotion components based on the provide
 <INS>Ensure that the animations are visually appealing and convey the insights clearly.</INS>
 <INS>Precisely consider the positioning, timing, and transitions of the animations to create a seamless and engaging Infographics animation.</INS>
 <INS>Only generate the Remotion code and nothing else.</INS>
+<INS>The Remotion code must be a single file that can be imported and used in the Remotion project.</INS>
 </INSTRUCTIONS>
 
 <INSIGHTS>
 {data}
 </INSIGHTS>
 
+<ASSET PATH>
+{asset_path}
+</ASSET PATH>
+
 <AVAILABLE SVG ASSETS>
 {assets}
 </AVAILABLE SVG ASSETS>
 
 <OUTPUT FORMAT>
+<SCRATCHPAD>
+Use the scratchpad for reasoning and planning your Remotion code before generating the final code.
+</SCRATCHPAD>
 ```typescript
 Remotion Code
 ```

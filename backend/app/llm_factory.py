@@ -74,6 +74,29 @@ class GroqLLM(LLM):
         return response.choices[0].message.content
 
 
+class GithubLLM(LLM):
+    def __init__(self) -> None:
+        self.client = OpenAI(
+            base_url="https://models.inference.ai.azure.com",
+            api_key=os.getenv("GITHUB_TOKEN"),
+        )
+        self._temperature = Config.DEFAULT_TEMPERATURE
+    
+    def get_response(
+        self, prompt: list[dict], model: str, json_mode: bool = False
+    ) -> str:
+        response_format = None
+        if json_mode:
+            response_format = {"type": "json_object"}
+        response = self.client.chat.completions.create(
+            model=model,
+            messages=prompt,
+            temperature=self._temperature,
+            response_format=response_format,
+        )
+        return response.choices[0].message.content
+
+
 class LLMFactory:
     @staticmethod
     def get_llm(llm_type: str) -> LLM:
@@ -81,5 +104,7 @@ class LLMFactory:
             return OpenaiLLM()
         elif llm_type == LLMType.GROQ:
             return GroqLLM()
+        elif llm_type == LLMType.GITHUB:
+            return GithubLLM()
         else:
             raise ValueError(f"Unknown LLM type: {llm_type}")
