@@ -1,29 +1,50 @@
 import { z } from "zod";
+
 export const COMP_NAME = "Video";
 
 export const CompositionProps = z.object({
   title: z.object({
     text: z.string(),
-    color: z.string().default("#000000").optional(),
-    animation: z.enum(["fade", "slide-left", "slide-right", "slide-up", "slide-down"]).default("fade").optional(),
+    animation: z.string(),
+    color: z.string(),
+    font: z.string(),
   }),
-  backgroundColor: z.string().default("#ffffff").optional(),
+  backgroundColor: z.string(),
   chart: z.object({
-    data: z.any()
+    data: z.array(
+      z.object({
+        key: z.string(),
+        data: z.number(),
+      })
+    ),
+    color: z.string(),
+    backgroundColor: z.string(),
   }),
-  insights: z.array(z.string()).default([])
+  insights: z.array(z.string()),
 });
 
 export const defaultVideoProps: z.infer<typeof CompositionProps> = {
   title: {
-    text: "Remotion",
+    text: "Welcome to Chanim",
+    animation: "slide-up",
+    color: "#E5E7EB",
+    font: "Inter",
   },
+  backgroundColor: "#111827",
   chart: {
-    data: [{ key: 'DLP', data: 13 },
-    { key: 'SIEM', data: 2 },
-    { key: 'Endpoint', data: 7 }]
+    data: [
+      { key: "A", data: 10 },
+      { key: "B", data: 25 },
+      { key: "C", data: 15 },
+    ],
+    color: "#10B981",
+    backgroundColor: "#1F2937",
   },
-  insights: []
+  insights: [
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+  ],
 };
 
 export const DURATION_IN_FRAMES = 300;
