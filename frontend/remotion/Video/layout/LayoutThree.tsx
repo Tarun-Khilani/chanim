@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { CompositionProps } from "../../../types/constants";
 import { loadFont, fontFamily } from "@remotion/google-fonts/Inter";
 import React from "react";
@@ -75,6 +75,9 @@ export const LayoutThree = ({
         font={fontFamily}
         style={{ top: '60%', width: '100%' }}
       />
+      <AbsoluteFill>
+        <Audio src={staticFile("audio/sunset.mp3")} />
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
