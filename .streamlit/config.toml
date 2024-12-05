@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+primaryColor="#FF477E"  # Vibrant pink
+backgroundColor="#0D1117"  # Modern deep dark gray
+secondaryBackgroundColor="#161B22"  # Slightly lighter gray for contrast
+textColor="#C9D1D9"  # Subtle light gray for text
+font="sans serif"
