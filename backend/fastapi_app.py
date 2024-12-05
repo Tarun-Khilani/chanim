@@ -48,6 +48,10 @@ class TextRequest(BaseModel):
     # video_quality: VideoQuality = VideoQuality.MEDIUM
 
 
+class CodeResponse(BaseModel):
+    code: str
+
+
 def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
     # Function to authenticate the user
     token = credentials.credentials
@@ -161,6 +165,54 @@ async def generate_from_file(
             data=data, data_type=data_type
         )
         return result
+    except Exception as e:
+        logger.error(f"Error generating from file: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/gen-text/code-remotion", response_model=CodeResponse, tags=["Remotion Code"])
+async def generate_from_text_remotion(
+    request: TextRequest, authenticated: bool = Depends(authenticate)
+):
+    """Generate code from text input"""
+    try:
+        result = builder.run_code_remotion(
+            data=request.text,
+            data_type=DataType.TEXT,
+        )
+        return CodeResponse(code=result)
+    except Exception as e:
+        logger.error(f"Error generating from text: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/gen-file/code-remotion", response_model=CodeResponse, tags=["Remotion Code"])
+async def generate_from_file_remotion(
+    file: UploadFile = File(...),
+    authenticated: bool = Depends(authenticate),
+):
+    """Generate code from file input"""
+    try:
+        file_extension = file.filename.split(".")[-1].lower()
+        if file_extension not in ["csv", "txt"]:
+            raise HTTPException(
+                status_code=400, detail="Only CSV and TXT files are supported"
+            )
+
+        content = await file.read()
+
+        if file_extension == "csv":
+            df = pd.read_csv(io.StringIO(content.decode()))
+            data = df
+            data_type = DataType.CSV
+        else:
+            data = content.decode()
+            data_type = DataType.TEXT
+
+        result = builder.run_code_remotion(
+            data=data, data_type=data_type
+        )
+        return CodeResponse(code=result)
     except Exception as e:
         logger.error(f"Error generating from file: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

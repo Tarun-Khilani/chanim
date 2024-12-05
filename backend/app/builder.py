@@ -34,6 +34,7 @@ from app.prompts.infographics import (
     INFOGRAPHICS_USER_PROMPT,
 )
 from app.prompts.manim_coder import M_CODER_SYS_PROMPT, M_CODER_USER_PROMPT
+from app.prompts.remotion_coder import R_CODER_SYS_PROMPT, R_CODER_USER_PROMPT
 from app.prompts.selection import (
     CHART_SELECTOR_SYSTEM_PROMPT,
     CHART_SELECTOR_USER_PROMPT,
@@ -205,7 +206,7 @@ class Builder:
         return response
 
     @timeit
-    def _gen_code(self, data: str) -> str:
+    def _gen_code_manim(self, data: str) -> str:
         assets = [asset.value for asset in SVGAssets]
         prompt = [
             {"role": "system", "content": M_CODER_SYS_PROMPT},
@@ -217,6 +218,21 @@ class Builder:
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM)
         self.logger.info(f"Generated code response: {response}")
         return response
+    
+    @timeit
+    def _gen_code_remotion(self, data: str) -> str:
+        assets = [asset.value for asset in SVGAssets]
+        prompt = [
+            {"role": "system", "content": R_CODER_SYS_PROMPT},
+            {
+                "role": "user",
+                "content": R_CODER_USER_PROMPT.format(data=data, assets=str(assets)),
+            },
+        ]
+        response = self.llm.get_response(prompt, Config.DEFAULT_LLM)
+        self.logger.info(f"Generated code response: {response}")
+        resp_code = re.findall(r"```typescript(.*?)```", response, re.DOTALL)[-1]
+        return resp_code
 
     @timeit
     def run(
@@ -251,3 +267,8 @@ class Builder:
             asset=response.asset.value,
             highchart=chart_response,
         )
+
+    @timeit
+    def run_code_remotion(self, data: str | pd.DataFrame, data_type: DataType) -> str:
+        data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
+        return self._gen_code_remotion(data_md)
