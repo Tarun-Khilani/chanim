@@ -44,9 +44,9 @@ const Home: NextPage = () => {
   }, [text]);
 
   return (
-    <div className="fixed inset-0 flex bg-[#0F1218]">
-      <div className="flex-1 h-full overflow-hidden p-8 flex flex-col">
-        <div className="flex-1 overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)]">
+    <div className="fixed inset-0 flex flex-col bg-[#0F1218]">
+      <div className="flex-1 overflow-hidden p-8">
+        <div className="h-full overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)]">
           <Player
             component={LayoutOne}
             inputProps={inputProps}
@@ -63,15 +63,17 @@ const Home: NextPage = () => {
             loop
           />
         </div>
-        <div className="mt-2">
-          <RenderControls
-            text={text}
-            setText={setText}
-            inputProps={inputProps}
-          />
-        </div>
       </div>
-      <div className="w-[400px] border-l border-gray-800 h-full overflow-hidden">
+      {/* Commenting out the RenderControls section
+      <div className="border-t border-gray-800 p-4">
+        <RenderControls
+          text={text}
+          setText={setText}
+          inputProps={inputProps}
+        />
+      </div>
+      */}
+      <div className="w-full border-t border-gray-800 p-4">
         <InfographicsGenerator />
       </div>
     </div>
