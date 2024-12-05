@@ -15,6 +15,8 @@ import {
 import { z } from "zod";
 import { RenderControls } from "../components/RenderControls";
 import InfographicsGenerator from "./components/InfographicsGenerator";
+import { LayoutTwo } from "../remotion/Video/layout/LayoutTwo";
+import { LayoutThree } from "../remotion/Video/layout/LayoutThree";
 
 const Home: NextPage = () => {
   const [text, setText] = useState<string>(defaultVideoProps.title.text);

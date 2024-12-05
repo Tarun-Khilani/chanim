@@ -64,10 +64,11 @@ export const LayoutOne = ({
 
       {/* Right side - Insights */}
       <TextLetter 
-          insights={insights} 
-          color={title.color}
-          font={fontFamily}
-        />
+        insights={insights} 
+        color={title.color}
+        font={fontFamily}
+        style={{ left: '50%', top: '30%', width: '50%' }}
+      />
     </AbsoluteFill>
   );
 };

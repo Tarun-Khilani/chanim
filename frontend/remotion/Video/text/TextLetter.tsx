@@ -11,7 +11,8 @@ export const TextLetter: React.FC<{
   insights: string[];
   color: string;
   font?: string;
-}> = ({ insights, color, font = "Arial" }) => {
+  style?: React.CSSProperties;
+}> = ({ insights, color, font = "Arial", style = {} }) => {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
 
@@ -19,7 +20,7 @@ export const TextLetter: React.FC<{
   let cumulativeLetterIndex = 0;
 
   return (
-    <AbsoluteFill style={{ left: '50%', top: '30%' }}>
+    <AbsoluteFill style={style}>
       <div
         style={{
           display: "flex",

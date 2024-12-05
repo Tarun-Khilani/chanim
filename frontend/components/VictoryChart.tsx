@@ -63,22 +63,11 @@ export const LineChart: React.FC<ChartProps> = ({
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
-        containerComponent={
-          <VictoryVoronoiContainer
-            labels={({ datum }) => `${datum.x}: ${datum.y}`}
-            labelComponent={
-              <VictoryTooltip
-                style={{ fill: color }}
-                flyoutStyle={{ fill: backgroundColor, stroke: color }}
-              />
-            }
-          />
-        }
       >
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: "transparent" },
+            axis: { stroke: color, opacity: 0.3 },
             grid: { stroke: color, opacity: 0.1 },
             tickLabels: { fill: color, opacity: 0.7, fontSize: 12 }
           }}
@@ -86,6 +75,7 @@ export const LineChart: React.FC<ChartProps> = ({
         <VictoryAxis
           style={{
             axis: { stroke: color, opacity: 0.3 },
+            grid: { stroke: color, opacity: 0.1 },
             tickLabels: { fill: color, opacity: 0.7, fontSize: 14 }
           }}
         />
@@ -112,6 +102,7 @@ export const LineChart: React.FC<ChartProps> = ({
             }
           }}
           data={transformedData}
+          labels={({ datum }) => Math.floor(datum.y)}
           animate={{
             duration: 2000,
             onLoad: { duration: 1000 }
@@ -144,22 +135,11 @@ export const BarChart: React.FC<ChartProps> = ({
         height={height}
         domain={{ y: [0, maxY] }}
         domainPadding={{ x: 50 }}
-        containerComponent={
-          <VictoryVoronoiContainer
-            labels={({ datum }) => `${datum.x}: ${datum.y}`}
-            labelComponent={
-              <VictoryTooltip
-                style={{ fill: color }}
-                flyoutStyle={{ fill: backgroundColor, stroke: color }}
-              />
-            }
-          />
-        }
       >
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: "transparent" },
+            axis: { stroke: color, opacity: 0.3 },
             grid: { stroke: color, opacity: 0.1 },
             tickLabels: { fill: color, opacity: 0.7, fontSize: 12 }
           }}
@@ -167,6 +147,7 @@ export const BarChart: React.FC<ChartProps> = ({
         <VictoryAxis
           style={{
             axis: { stroke: color, opacity: 0.3 },
+            grid: { stroke: color, opacity: 0.1 },
             tickLabels: { fill: color, opacity: 0.7, fontSize: 14 }
           }}
         />
