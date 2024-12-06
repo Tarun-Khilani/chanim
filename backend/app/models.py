@@ -47,7 +47,7 @@ class InfographicRemotionResponse(BaseModel):
         data: int | float
     class GroupedStackedData(BaseModel):
         key: str
-        values: list[dict[str, int | float]]
+        values: dict[str, int | float]
     reasoning: list[str]
     title: str
     chart_type: RemotionChartType | None
@@ -74,7 +74,7 @@ class InfographicAPIResponse(BaseModel):
         data: int | float
     class GroupedStackedData(BaseModel):
         key: str
-        values: list[dict[str, int | float]]
+        values: dict[str, int | float]
     title: str
     chart_type: RemotionChartType | None = None
     insights: list[str]

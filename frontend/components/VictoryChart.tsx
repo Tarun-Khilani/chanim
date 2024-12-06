@@ -4,10 +4,7 @@ import {
   VictoryLine,
   VictoryTheme,
   VictoryAxis,
-  VictoryTooltip,
-  VictoryVoronoiContainer,
   VictoryArea,
-  VictoryLabel,
   VictoryBar,
   VictoryPie,
   VictoryContainer,
@@ -76,7 +73,13 @@ export const LineChart: React.FC<ChartProps> = ({
           style={{
             axis: { stroke: color, opacity: 0.3 },
             grid: { stroke: color, opacity: 0.1 },
-            tickLabels: { fill: color, opacity: 0.7, fontSize: 14 }
+            tickLabels: { 
+              fill: color, 
+              opacity: 0.7, 
+              fontSize: 12,
+              angle: -30,
+              textAnchor: 'end'
+            }
           }}
         />
         
@@ -249,7 +252,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
-        domainPadding={{ x: 50 }}
+        domainPadding={{ x: 60 }}
       >
         <VictoryLegend
           x={width - 150}
@@ -267,7 +270,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: "transparent" },
+            axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
             tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 12 }
           }}
@@ -275,6 +278,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
         <VictoryAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
+            grid: { stroke: colors[0], opacity: 0.1 },
             tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 14 }
           }}
         />
@@ -325,13 +329,13 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
   }, 0) * 1.2;
 
   return (
-    <div style={{ backgroundColor, padding: "20px" }}>
+    <div style={{ backgroundColor, padding: "10px" }}>
       <VictoryChart
         theme={VictoryTheme.material}
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
-        domainPadding={{ x: 50 }}
+        domainPadding={{ x: 60 }}
       >
         <VictoryLegend
           x={width - 150}
@@ -349,7 +353,7 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: "transparent" },
+            axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
             tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 12 }
           }}
@@ -357,12 +361,13 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
         <VictoryAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
+            grid: { stroke: colors[0], opacity: 0.1 },
             tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 14 }
           }}
         />
         
         <VictoryGroup
-          offset={50}
+          offset={15}
           colorScale={colors}
         >
           {transformedData.map((seriesData, index) => (

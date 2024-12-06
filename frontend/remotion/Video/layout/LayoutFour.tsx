@@ -5,12 +5,15 @@ import React from "react";
 import { TextFade } from "../text/TextFade";
 import { TextSlide } from "../text/TextSlide";
 import { TextLetter } from "../text/TextLetter";
+import { fonts } from "../utils/fonts";
+import { AnimatedAsset } from "../components/AnimatedAsset";
 
 
 export const LayoutFour = ({
   title,
   backgroundColor,
   insights,
+  asset,
 }: z.infer<typeof CompositionProps>) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -35,6 +38,7 @@ export const LayoutFour = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor }}>
+      <AnimatedAsset assetName={asset} position="left" delay={10} scale={0.7} />
       {/* Title at the top */}
       <TextComponent
         direction={title.animation !== "fade" ? getSlideDirection() : "left"}
@@ -44,6 +48,7 @@ export const LayoutFour = ({
           style={{
             fontFamily,
             color: title.color,
+            marginLeft: "160px",
           }}
         >
           {title.text}

@@ -7,13 +7,14 @@ import { TextSlide } from "../text/TextSlide";
 import { Chart } from "../chart/Chart";
 import { TextLetter } from "../text/TextLetter";
 import { fonts } from "../utils/fonts";
-
+import { AnimatedAsset } from "../components/AnimatedAsset";
 
 export const LayoutOne = ({
   title,
   backgroundColor,
   chart,
   insights,
+  asset,
 }: z.infer<typeof CompositionProps>) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -38,6 +39,8 @@ export const LayoutOne = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor }}>
+      <AnimatedAsset assetName={asset} position="left" delay={10} scale={0.7} />
+      
       <TextComponent
         direction={title.animation !== "fade" ? getSlideDirection() : "left"}
       >
@@ -46,6 +49,7 @@ export const LayoutOne = ({
           style={{
             fontFamily,
             color: title.color,
+            marginLeft: "160px"
           }}
         >
           {title.text}

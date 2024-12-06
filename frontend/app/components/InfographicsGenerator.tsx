@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
-import { generateFromText, generateFromFile, generateFromTextInfographic } from '../services/api';
+import { generateFromTextInfographic, generateFromFileInfographic } from '../services/api';
 
 interface InfographicsGeneratorProps {
   onApiResponse?: (response: any) => void;
@@ -12,9 +12,10 @@ export default function InfographicsGenerator({ onApiResponse }: InfographicsGen
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [fileMessage, setFileMessage] = useState<string | null>(null);
 
-  const handleTextSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleTextSubmit = async () => {
+    if (file) return;  
     setLoading(true);
     setError(null);
 
@@ -30,27 +31,18 @@ export default function InfographicsGenerator({ onApiResponse }: InfographicsGen
     }
   };
 
-  const handleFileSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!file) return;
+  const handleFileSubmit = async () => {
+    if (!file || text) return;  
 
     setLoading(true);
     setError(null);
 
     try {
-      const response = await generateFromFile(file);
+      const response = await generateFromFileInfographic(file);
       if (onApiResponse) {
         onApiResponse(response);
       }
-      const blob = response;
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'infographic.mp4';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
+      setFileMessage('File uploaded and processed successfully.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -58,38 +50,98 @@ export default function InfographicsGenerator({ onApiResponse }: InfographicsGen
     }
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (file) {
+      await handleFileSubmit();
+    } else if (text) {
+      await handleTextSubmit();
     }
+  };
+
+  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+    if (file) setFile(null);  
+    setFileMessage(null);
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    if (selectedFile && !selectedFile.name.match(/\.(csv|txt)$/i)) {
+      setError('Only CSV or TXT files are allowed.');
+      setFile(null);
+      return;
+    }
+    setFile(selectedFile);
+    setFileMessage(selectedFile ? `Uploaded: ${selectedFile.name}` : null);
+    if (text) setText('');  
+  };
+
+  const handleClearFile = () => {
+    setFile(null);
+    setFileMessage(null);
   };
 
   return (
     <div className="flex items-center gap-4">
-      <div className="relative">
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          accept=".txt,.pdf,.doc,.docx"
-        />
-        <button
-          className="p-2 rounded-lg bg-[#1A1F27] border border-gray-700 hover:bg-[#242936] transition-colors"
-          title="Upload file"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-        </button>
+      <div className="relative flex items-center gap-2">
+        <div className="relative">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            accept=".csv,.txt"
+            disabled={!!text}  
+          />
+          <button
+            type="button"
+            className={`p-2 rounded-lg border transition-colors ${
+              file 
+                ? 'bg-emerald-600/20 border-emerald-600/30 hover:bg-emerald-600/30' 
+                : 'bg-[#1A1F27] border-gray-700 hover:bg-[#242936]'
+            }`}
+            title={file ? 'File uploaded' : 'Upload file'}
+            disabled={!!text}  
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className={`h-5 w-5 transition-colors ${file ? 'text-emerald-500' : 'text-gray-400'}`} 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+          </button>
+        </div>
+        {file && (
+          <button
+            type="button"
+            onClick={handleClearFile}
+            className="p-2 rounded-lg bg-[#1A1F27] border border-gray-700 hover:bg-[#242936] transition-colors"
+            title="Clear file"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-5 w-5 text-gray-400" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
       
-      <form onSubmit={handleTextSubmit} className="flex-1 flex gap-2">
+      <form onSubmit={handleSubmit} className="flex-1 flex gap-2">
         <input
           type="text"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleTextChange}
           className="flex-1 px-4 py-2 bg-[#1A1F27] border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
           placeholder="Enter your text or upload a file to generate an infographic..."
+          disabled={!!file}  
         />
         <button
           type="submit"
@@ -109,6 +161,8 @@ export default function InfographicsGenerator({ onApiResponse }: InfographicsGen
           )}
         </button>
       </form>
+
+      {fileMessage && <p className="absolute bottom-full left-0 right-0 p-3 mb-2 bg-green-500/10 border border-green-500/20 rounded-lg text-green-500 text-sm">{fileMessage}</p>}
       {error && (
         <div className="absolute bottom-full left-0 right-0 p-3 mb-2 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-sm">
           {error}

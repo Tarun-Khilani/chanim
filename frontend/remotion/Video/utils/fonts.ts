@@ -27,11 +27,11 @@ loadOpenSans();
 loadPoppins();
 
 export const fonts = {
-  'Inter': 'var(--font-inter)',
-  'Roboto': 'var(--font-roboto)',
-  'Montserrat': 'var(--font-montserrat)',
-  'Open Sans': 'var(--font-open-sans)',
-  'Poppins': 'var(--font-poppins)',
+  'Inter': interFont,
+  'Roboto': robotoFont,
+  'Montserrat': montserratFont,
+  'Open Sans': openSansFont,
+  'Poppins': poppinsFont,
 } as const;
 
 export type FontFamily = keyof typeof fonts;
