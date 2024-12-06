@@ -62,7 +62,7 @@ const Home: NextPage = () => {
     return {
       title: { 
         text: apiResponse.title, 
-        animation: "slide-up", 
+        animation: apiResponse.title_animation, 
         color: styles.titleColor,
         font: styles.titleFont,
       },

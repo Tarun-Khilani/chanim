@@ -82,6 +82,13 @@ class Arrangement(str, Enum):
     CHART_CENTER_TEXT_BELOW = "CHART_CENTER_TEXT_BELOW"
 
 
+class TitleAnimationType(str, Enum):
+    FADE = "fade"
+    SLIDE_LEFT = "slide-left"
+    SLIDE_RIGHT = "slide-right"
+    SLIDE_UP = "slide-up"
+    SLIDE_DOWN = "slide-down"
+
 class RendererType(str, Enum):
     MANIM = "manim"
     REMOTION = "remotion"

@@ -278,6 +278,7 @@ class Builder:
         response = self._gen_infographic(data_md, RendererType.REMOTION)
         return InfographicAPIResponse(
             title=response.title,
+            title_animation=response.title_animation.value,
             chart_type=response.chart_type.value,
             insights=response.insights,
             data=[d.model_dump() for d in response.data],

@@ -6,6 +6,7 @@ from app.enums import (
     ManimChartType,
     SVGAssets,
     RemotionChartType,
+    TitleAnimationType,
 )
 
 
@@ -50,6 +51,7 @@ class InfographicRemotionResponse(BaseModel):
         values: dict[str, int | float]
     reasoning: list[str]
     title: str
+    title_animation: TitleAnimationType
     chart_type: RemotionChartType | None
     insights: list[str]
     data: list[BarPieLineData | GroupedStackedData]
@@ -76,6 +78,7 @@ class InfographicAPIResponse(BaseModel):
         key: str
         values: dict[str, int | float]
     title: str
+    title_animation: TitleAnimationType
     chart_type: RemotionChartType | None = None
     insights: list[str]
     data: list[BarPieLineData | GroupedStackedData]
