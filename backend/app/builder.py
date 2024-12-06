@@ -32,7 +32,7 @@ from app.models import (
     InfographicRemotionResponse,
     InfographicResponse,
     ManimChartResponse,
-    StoryResponse,
+    StoryRemotionResponse,
 )
 from app.prompts.crafter import CRAFTER_SYS_PROMPT, CRAFTER_USER_PROMPT
 from app.prompts.highchart import HC_GEN_SYSTEM_PROMPT, HC_GEN_USER_PROMPT
@@ -215,14 +215,16 @@ class Builder:
         return outfile_name
 
     @timeit
-    def _craft_story(self, data: str) -> StoryResponse:
+    def _craft_story(self, data: str) -> StoryRemotionResponse:
+        schema = json.dumps(_type_to_response_format(StoryRemotionResponse), indent=2)
+        assets = [asset.value for asset in SVGAssets]
         prompt = [
-            {"role": "system", "content": CRAFTER_SYS_PROMPT},
+            {"role": "system", "content": CRAFTER_SYS_PROMPT.format(schema=schema, assets=str(assets))},
             {"role": "user", "content": CRAFTER_USER_PROMPT.format(data=data)},
         ]
         response = self.llm.get_response(prompt, Config.DEFAULT_LLM, json_mode=True)
         self.logger.info(f"Crafted story response: {response}")
-        response = StoryResponse(**json.loads(response))
+        response = StoryRemotionResponse(**json.loads(response))
         return response
 
     @timeit
@@ -281,3 +283,8 @@ class Builder:
     def run_code_remotion(self, data: str | pd.DataFrame, data_type: DataType) -> str:
         data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
         return self._gen_code_remotion(data_md)
+
+    @timeit
+    def run_story_remotion(self, data: str | pd.DataFrame, data_type: DataType) -> StoryRemotionResponse:
+        data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
+        return self._craft_story(data_md)

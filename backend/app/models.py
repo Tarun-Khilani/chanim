@@ -64,12 +64,5 @@ class InfographicRemotionResponse(BaseModel):
     arrangement: RemotionArrangement
 
 
-class StoryResponse(BaseModel):
-    class Scene(BaseModel):
-        title: str
-        visuals: str
-        animations: str
-        key_text: str
-        transitions: str
-
-    scenes: list[Scene]
+class StoryRemotionResponse(BaseModel):
+    infographics: list[InfographicRemotionResponse]
