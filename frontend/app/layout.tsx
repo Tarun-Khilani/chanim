@@ -22,20 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <style>
-          {`
-            :root {
-              --font-inter: ${inter.style.fontFamily};
-              --font-roboto: ${roboto.style.fontFamily};
-              --font-montserrat: ${montserrat.style.fontFamily};
-              --font-open-sans: ${openSans.style.fontFamily};
-              --font-poppins: ${poppins.style.fontFamily};
-            }
-          `}
-        </style>
-      </head>
-      <body className={inter.className}>{children}</body>
+
+        <body className={inter.className}>{children}</body>
+
     </html>
   );
 }

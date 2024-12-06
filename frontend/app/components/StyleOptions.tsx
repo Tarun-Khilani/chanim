@@ -21,7 +21,7 @@ const fontOptions = [
 ];
 
 export default function StyleOptions({ onStyleChange }: StyleOptionsProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [styles, setStyles] = useState({
     titleColor: '#E5E7EB',
     titleFont: 'Inter',

@@ -14,7 +14,7 @@ import {
 import { z } from "zod";
 import { RenderControls } from "../components/RenderControls";
 import InfographicsGenerator from "./components/InfographicsGenerator";
-import { LayoutComponentMap } from "../remotion/Video/utils/mappings";
+import { Layout } from "../remotion/Video/layout/Layout";
 import StyleOptions from "./components/StyleOptions";
 import { ChartType, LayoutType } from "../remotion/Video/utils/mappings";
 
@@ -89,7 +89,7 @@ const Home: NextPage = () => {
         <div className="flex-1 p-8">
           <div className="h-full overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)]">
             <Player
-              component={LayoutComponentMap[inputProps.arrangement]}
+              component={Layout}
               inputProps={inputProps}
               durationInFrames={DURATION_IN_FRAMES}
               fps={VIDEO_FPS}
@@ -106,7 +106,10 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="w-full border-t border-gray-800 p-4">
-          <InfographicsGenerator onApiResponse={setApiResponse} />
+          <InfographicsGenerator 
+            onApiResponse={setApiResponse} 
+            inputProps={inputProps} 
+          />
         </div>
       </div>
       <StyleOptions onStyleChange={handleStyleChange} />

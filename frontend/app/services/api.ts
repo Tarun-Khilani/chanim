@@ -141,3 +141,41 @@ export async function generateFromFileRemotion(file: File): Promise<string> {
     throw error;
   }
 }
+
+export async function renderVideo(inputProps: any): Promise<void> {
+  try {
+    const response = await fetch('http://localhost:3001/render', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inputProps),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Get the blob from the response
+    const blob = await response.blob();
+    
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a temporary link element
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rendered-video.mp4'; // Set the download filename
+    
+    // Append to body, click and remove
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    // Clean up the URL
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error rendering video:', error);
+    throw error;
+  }
+}

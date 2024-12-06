@@ -42,7 +42,7 @@ export const defaultVideoProps: z.infer<typeof CompositionProps> = {
     backgroundColor: "#111827",
     chartType: ChartType.LINE,
   },
-  asset: "image",
+  asset: "car.svg",
   arrangement: "LEFT_CHART_RIGHT_TEXT",
   insights: [
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",

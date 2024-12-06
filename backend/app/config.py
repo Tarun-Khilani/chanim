@@ -17,9 +17,8 @@ class Config:
     LOG_LEVEL: str = "INFO"
 
     DEFAULT_TEMPERATURE: float = 0.7
-    DEFAULT_LLM_PROVIDER = LLMType.GITHUB
-    DEFAULT_LLM = GithubModel.GPT4O
-
+    DEFAULT_LLM_PROVIDER = LLMType.OPENAI
+    DEFAULT_LLM = OpenaiModel.GPT4O
     DEFAULT_FE_ASSET_PATH: str = "public/icons/"
 
 

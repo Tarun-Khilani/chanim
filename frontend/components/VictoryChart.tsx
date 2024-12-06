@@ -60,6 +60,9 @@ export const LineChart: React.FC<ChartProps> = ({
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
+        animate={{
+          duration: 2000,
+        }}
       >
         <VictoryAxis
           dependentAxis
@@ -138,6 +141,9 @@ export const BarChart: React.FC<ChartProps> = ({
         height={height}
         domain={{ y: [0, maxY] }}
         domainPadding={{ x: 50 }}
+        animate={{
+          duration: 2000,
+        }}
       >
         <VictoryAxis
           dependentAxis
@@ -253,6 +259,9 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
         height={height}
         domain={{ y: [0, maxY] }}
         domainPadding={{ x: 60 }}
+        animate={{
+          duration: 2000,
+        }}
       >
         <VictoryLegend
           x={width - 150}
@@ -336,6 +345,9 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
         height={height}
         domain={{ y: [0, maxY] }}
         domainPadding={{ x: 60 }}
+        animate={{
+          duration: 2000,
+        }}
       >
         <VictoryLegend
           x={width - 150}
