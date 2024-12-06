@@ -40,7 +40,7 @@ export const LayoutTwo = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor }}>
-      <AnimatedAsset assetName={asset} position="left" delay={10} scale={0.7} />
+      <AnimatedAsset assetName={asset} position="left" delay={30} scale={0.7} />
 
       <TextComponent
         direction={title.animation !== "fade" ? getSlideDirection() : "left"}
@@ -50,7 +50,7 @@ export const LayoutTwo = ({
           style={{
             fontFamily,
             color: title.color,
-            marginLeft: "160px"
+            marginLeft: "180px"
           }}
         >
           {title.text}

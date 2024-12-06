@@ -50,7 +50,7 @@ const Home: NextPage = () => {
           chartType: ChartType.BAR,
         },
         asset: "rocket.svg",
-        arrangement: LayoutType.TOP_TITLE_BOTTOM_CONTENT,
+        arrangement: LayoutType.TITLE_CENTER,
         insights: [
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",

@@ -40,7 +40,7 @@ export const LayoutThree = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor }}>
-      <AnimatedAsset assetName={asset} position="left" delay={10} scale={0.7} />
+      <AnimatedAsset assetName={asset} position="left" delay={30} scale={0.7} />
 
       {/* Title at the top */}
       <div className="pt-8">
@@ -52,7 +52,7 @@ export const LayoutThree = ({
             style={{
               fontFamily,
               color: title.color,
-              marginLeft: "160px"
+              marginLeft: "180px"
             }}
           >
             {title.text}

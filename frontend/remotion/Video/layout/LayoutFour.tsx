@@ -48,7 +48,7 @@ export const LayoutFour = ({
           style={{
             fontFamily,
             color: title.color,
-            marginLeft: "160px",
+            marginLeft: "180px",
           }}
         >
           {title.text}
