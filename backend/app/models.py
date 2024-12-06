@@ -5,6 +5,7 @@ from app.enums import (
     ChartType,
     ManimChartType,
     SVGAssets,
+    RemotionArrangement,
     RemotionChartType,
     TitleAnimationType,
 )
@@ -60,7 +61,7 @@ class InfographicRemotionResponse(BaseModel):
     insights: list[str]
     data: list[BarPieLineData | GroupedStackedData]
     asset: SVGAssets
-    arrangement: Arrangement
+    arrangement: RemotionArrangement
 
 
 class StoryResponse(BaseModel):
