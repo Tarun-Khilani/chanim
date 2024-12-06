@@ -13,7 +13,7 @@ from app.builder import Builder
 from app.config import QUALITY_MAPPING
 from app.enums import DataType, VideoQuality
 from app.logger import setup_logger
-from app.models import InfographicAPIResponse
+from app.models import InfographicRemotionResponse
 
 # Load environment variables
 load_dotenv()
@@ -123,7 +123,7 @@ async def generate_from_file_manim(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/gen-text/infographic", response_model=InfographicAPIResponse, tags=["Infographics"])
+@app.post("/gen-text/infographic", response_model=InfographicRemotionResponse, tags=["Infographics"])
 async def generate_from_text(
     request: TextRequest, authenticated: bool = Depends(authenticate)
 ):
@@ -138,7 +138,7 @@ async def generate_from_text(
         logger.error(f"Error generating from text: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/gen-file/infographic", response_model=InfographicAPIResponse, tags=["Infographics"])
+@app.post("/gen-file/infographic", response_model=InfographicRemotionResponse, tags=["Infographics"])
 async def generate_from_file(
     file: UploadFile = File(...),
     authenticated: bool = Depends(authenticate),

@@ -29,7 +29,6 @@ from app.manim_scenes.scene_builder import InfographicBuilder
 from app.models import (
     ChartSelectorResponse,
     HCResponse,
-    InfographicAPIResponse,
     InfographicRemotionResponse,
     InfographicResponse,
     ManimChartResponse,
@@ -273,18 +272,10 @@ class Builder:
     @timeit
     def run_infographic(
         self, data: str | pd.DataFrame, data_type: DataType
-    ) -> InfographicAPIResponse:
+    ) -> InfographicRemotionResponse:
         data_md = data if data_type == DataType.TEXT else data.to_markdown(index=False)
         response = self._gen_infographic(data_md, RendererType.REMOTION)
-        return InfographicAPIResponse(
-            title=response.title,
-            title_animation=response.title_animation.value,
-            chart_type=response.chart_type.value,
-            insights=response.insights,
-            data=[d.model_dump() for d in response.data],
-            asset=response.asset.value,
-            arrangement=response.arrangement.value,
-        )
+        return response
 
     @timeit
     def run_code_remotion(self, data: str | pd.DataFrame, data_type: DataType) -> str:

@@ -42,17 +42,21 @@ class InfographicResponse(BaseModel):
     arrangement: Arrangement
 
 
-class InfographicRemotionResponse(BaseModel):
-    class BarPieLineData(BaseModel):
+class BarPieLineData(BaseModel):
         key: str
         data: int | float
-    class GroupedStackedData(BaseModel):
-        key: str
-        values: dict[str, int | float]
+
+
+class GroupedStackedData(BaseModel):
+    key: str
+    values: dict[str, int | float]
+
+
+class InfographicRemotionResponse(BaseModel):
     reasoning: list[str]
     title: str
     title_animation: TitleAnimationType
-    chart_type: RemotionChartType | None
+    chart_type: RemotionChartType | None = None
     insights: list[str]
     data: list[BarPieLineData | GroupedStackedData]
     asset: SVGAssets
@@ -68,19 +72,3 @@ class StoryResponse(BaseModel):
         transitions: str
 
     scenes: list[Scene]
-
-
-class InfographicAPIResponse(BaseModel):
-    class BarPieLineData(BaseModel):
-        key: str
-        data: int | float
-    class GroupedStackedData(BaseModel):
-        key: str
-        values: dict[str, int | float]
-    title: str
-    title_animation: TitleAnimationType
-    chart_type: RemotionChartType | None = None
-    insights: list[str]
-    data: list[BarPieLineData | GroupedStackedData]
-    asset: SVGAssets
-    arrangement: Arrangement
