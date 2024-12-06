@@ -10,16 +10,10 @@ export const CompositionProps = z.object({
     font: z.string(),
   }),
   backgroundColor: z.string(),
-  chart: z.object({
-    data: z.array(
-      z.object({
-        key: z.string(),
-        data: z.number(),
-      })
-    ),
-    color: z.string(),
-    backgroundColor: z.string(),
-  }),
+  chart_type: z.string(),
+  data: z.array(z.any()),
+  asset: z.string(),
+  arrangement: z.string(),
   insights: z.array(z.string()),
 });
 
@@ -31,15 +25,13 @@ export const defaultVideoProps: z.infer<typeof CompositionProps> = {
     font: "Inter",
   },
   backgroundColor: "#111827",
-  chart: {
-    data: [
-      { key: "A", data: 10 },
-      { key: "B", data: 25 },
-      { key: "C", data: 15 },
-    ],
-    color: "#10B981",
-    backgroundColor: "#1F2937",
-  },
+  chart_type: "line",
+  data: [
+    { x: "2023", y: 100 },
+    { x: "2024", y: 120 },
+  ],
+  asset: "image",
+  arrangement: "horizontal",
   insights: [
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",

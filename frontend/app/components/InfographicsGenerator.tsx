@@ -1,9 +1,13 @@
 'use client';
 
 import { useState, FormEvent, ChangeEvent } from 'react';
-import { generateFromText, generateFromFile } from '../services/api';
+import { generateFromText, generateFromFile, generateFromTextInfographic } from '../services/api';
 
-export default function InfographicsGenerator() {
+interface InfographicsGeneratorProps {
+  onApiResponse?: (response: any) => void;
+}
+
+export default function InfographicsGenerator({ onApiResponse }: InfographicsGeneratorProps) {
   const [text, setText] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,17 +19,10 @@ export default function InfographicsGenerator() {
     setError(null);
 
     try {
-      const blob = await generateFromText(text);
-      // Create a URL for the blob
-      const url = window.URL.createObjectURL(blob);
-      // Create a link and trigger download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'infographic.mp4';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
+      const response = await generateFromTextInfographic(text);
+      if (onApiResponse) {
+        onApiResponse(response);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -41,7 +38,11 @@ export default function InfographicsGenerator() {
     setError(null);
 
     try {
-      const blob = await generateFromFile(file);
+      const response = await generateFromFile(file);
+      if (onApiResponse) {
+        onApiResponse(response);
+      }
+      const blob = response;
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

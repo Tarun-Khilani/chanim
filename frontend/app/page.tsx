@@ -21,7 +21,8 @@ import { LayoutFour } from "../remotion/Video/layout/LayoutFour";
 import StyleOptions from "./components/StyleOptions";
 
 const Home: NextPage = () => {
-  const [text, setText] = useState<string>(defaultVideoProps.title.text);
+  const [text, setText] = useState<string>("");
+  const [apiResponse, setApiResponse] = useState<any>(null);
   const [styles, setStyles] = useState({
     titleColor: "#E5E7EB",
     titleFont: "Inter",
@@ -30,31 +31,50 @@ const Home: NextPage = () => {
     chartBackground: "#1F2937",
   });
 
-  const inputProps: z.infer<typeof CompositionProps> = useMemo(() => {
+  const inputProps: z.infer<typeof CompositionProps> | undefined = useMemo(() => {
+    if (!apiResponse) {
+      return {
+        title: {
+          text: "Welcome to Chanim",
+          animation: "slide-up",
+          color: "#E5E7EB",
+          font: "Inter",
+        },
+        backgroundColor: "#111827",
+        chart_type: "line",
+        data: [
+          { x: "2023", y: 100 },
+          { x: "2024", y: 120 },
+        ],
+        asset: "image",
+        arrangement: "horizontal",
+        insights: [
+          "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+          "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+          "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+        ],
+      };
+    }
+
     return {
       title: { 
-        text: text, 
+        text: apiResponse.title, 
         animation: "slide-up", 
         color: styles.titleColor,
         font: styles.titleFont,
       },
       backgroundColor: styles.backgroundColor,
       chart: {
-        data: [
-          { key: "A", data: 10 },
-          { key: "B", data: 25 },
-          { key: "C", data: 15 },
-        ],
+        data: apiResponse.data.map((item: any) => ({
+          key: item.key,
+          data: item.value
+        })),
         color: styles.chartColor,
         backgroundColor: styles.chartBackground,
       },
-      insights: [
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-      ],
+      insights: apiResponse.insights,
     };
-  }, [text, styles]);
+  }, [text, styles, apiResponse]);
 
   const handleStyleChange = (newStyles: typeof styles) => {
     setStyles(newStyles);
@@ -83,7 +103,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="w-full border-t border-gray-800 p-4">
-          <InfographicsGenerator />
+          <InfographicsGenerator onApiResponse={setApiResponse} />
         </div>
       </div>
       <StyleOptions onStyleChange={handleStyleChange} />
