@@ -52,12 +52,11 @@ from app.prompts.txt_extraction import (
     TXT_EXTRACT_USER_PROMPT,
 )
 from app.utils import timeit
-from app.enums import LLMType
 
 
 class Builder:
     def __init__(self) -> None:
-        self.llm = LLMFactory.get_llm(LLMType.OPENAI)
+        self.llm = LLMFactory.get_llm(Config.DEFAULT_LLM_PROVIDER)
         self.logger = setup_logger(__name__)
 
     @timeit

@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
 
 from app.enums import (
     Arrangement,
@@ -45,7 +44,7 @@ class InfographicResponse(BaseModel):
 class InfographicRemotionResponse(BaseModel):
     class BarPieLineData(BaseModel):
         key: str
-        value: int | float
+        data: int | float
     class GroupedStackedData(BaseModel):
         key: str
         values: list[dict[str, int | float]]
@@ -72,7 +71,7 @@ class StoryResponse(BaseModel):
 class InfographicAPIResponse(BaseModel):
     class BarPieLineData(BaseModel):
         key: str
-        value: int | float
+        data: int | float
     class GroupedStackedData(BaseModel):
         key: str
         values: list[dict[str, int | float]]

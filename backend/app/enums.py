@@ -54,7 +54,7 @@ class ManimChartType(str, Enum):
 
 class RemotionChartType(str, Enum):
     BAR = "bar"
-    COLUMN = "column"
+    LINE = "line"
     PIE = "pie"
     STACKED_BAR = "stacked_bar"
     GROUPED_BAR = "grouped_bar"
