@@ -1,14 +1,13 @@
 import { z } from "zod";
 import { AbsoluteFill, Audio, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { CompositionProps } from "../../../types/constants";
-import { loadFont, fontFamily } from "@remotion/google-fonts/Inter";
 import React from "react";
 import { TextFade } from "../text/TextFade";
 import { TextSlide } from "../text/TextSlide";
 import { Chart } from "../chart/Chart";
 import { TextLetter } from "../text/TextLetter";
+import { fonts } from "../utils/fonts";
 
-loadFont();
 
 export const LayoutThree = ({
   title,
@@ -20,6 +19,7 @@ export const LayoutThree = ({
   const { fps } = useVideoConfig();
 
   const TextComponent = title.animation === "fade" ? TextFade : TextSlide;
+  const fontFamily = fonts[title.font as keyof typeof fonts] || fonts.Inter;
 
   const getSlideDirection = () => {
     switch (title.animation) {

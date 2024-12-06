@@ -8,6 +8,7 @@ import { Chart } from "../chart/Chart";
 import { TextLetter } from "../text/TextLetter";
 import { fonts } from "../utils/fonts";
 
+
 export const LayoutOne = ({
   title,
   backgroundColor,
