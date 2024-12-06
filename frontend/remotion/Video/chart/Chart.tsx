@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { LineChart, BarChart, PieChart } from "../../../components/VictoryChart";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import React from "react";
+import { ChartComponentMap, ChartType } from "../utils/mappings";
 
 export const chartSchema = z.object({
   data: z.array(z.object({
@@ -9,10 +9,16 @@ export const chartSchema = z.object({
     data: z.number()
   })),
   color: z.string(),
-  backgroundColor: z.string()
+  backgroundColor: z.string(),
+  chartType: z.nativeEnum(ChartType).nullable()
 });
 
-export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ data, color, backgroundColor }) => {
+export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ 
+  data, 
+  color, 
+  backgroundColor,
+  chartType
+}) => {
   const { width: videoWidth, fps } = useVideoConfig();
   const frame = useCurrentFrame();
   
@@ -35,6 +41,11 @@ export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ data, color, back
   const opacity = interpolate(progress, [0, 1], [0, 1]);
   const translateY = interpolate(progress, [0, 1], [50, 0]);
 
+  if (!chartType) return null;
+
+  const ChartComponent = ChartComponentMap[chartType];
+  if (!ChartComponent) return null;
+
   return (
     <div 
       style={{
@@ -44,12 +55,12 @@ export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ data, color, back
       }}
       className="origin-center"
     >
-      <LineChart 
-        data={data} 
-        color={color} 
-        backgroundColor={backgroundColor}
+      <ChartComponent
+        data={data}
         width={chartWidth}
         height={chartHeight}
+        color={color}
+        backgroundColor={backgroundColor}
       />
     </div>
   );

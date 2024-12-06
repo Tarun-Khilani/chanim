@@ -63,6 +63,7 @@ export const LayoutThree = ({
               data={chart.data} 
               color={chart.color} 
               backgroundColor={chart.backgroundColor}
+              chartType={chart.chartType}
             />
           </div>
         </div>

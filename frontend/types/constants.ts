@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ChartType } from "../remotion/Video/utils/mappings";
 
 export const COMP_NAME = "Video";
 
@@ -10,8 +11,15 @@ export const CompositionProps = z.object({
     font: z.string(),
   }),
   backgroundColor: z.string(),
-  chart_type: z.string(),
-  data: z.array(z.any()),
+  chart: z.object({
+    data: z.array(z.object({
+      key: z.string(),
+      data: z.number()
+    })),
+    color: z.string(),
+    backgroundColor: z.string(),
+    chartType: z.nativeEnum(ChartType).nullable(),
+  }),
   asset: z.string(),
   arrangement: z.string(),
   insights: z.array(z.string()),
@@ -25,13 +33,17 @@ export const defaultVideoProps: z.infer<typeof CompositionProps> = {
     font: "Inter",
   },
   backgroundColor: "#111827",
-  chart_type: "line",
-  data: [
-    { x: "2023", y: 100 },
-    { x: "2024", y: 120 },
-  ],
+  chart: {
+    data: [
+      { key: "2023", data: 100 },
+      { key: "2024", data: 120 },
+    ],
+    color: "#E5E7EB",
+    backgroundColor: "#111827",
+    chartType: ChartType.LINE,
+  },
   asset: "image",
-  arrangement: "horizontal",
+  arrangement: "LEFT_CHART_RIGHT_TEXT",
   insights: [
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",

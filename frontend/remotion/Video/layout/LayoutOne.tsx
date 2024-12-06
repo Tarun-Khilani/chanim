@@ -56,7 +56,7 @@ export const LayoutOne = ({
         <div className="flex justify-between items-start px-12">
           {/* Left side - Chart */}
           <div className="w-1/2">
-            <Chart data={chart.data} color={chart.color} backgroundColor={chart.backgroundColor} />
+            <Chart data={chart.data} color={chart.color} backgroundColor={chart.backgroundColor} chartType={chart.chartType}/>
           </div>
         </div>
       </AbsoluteFill>

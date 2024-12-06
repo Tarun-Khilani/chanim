@@ -102,7 +102,7 @@ export const LineChart: React.FC<ChartProps> = ({
             }
           }}
           data={transformedData}
-          labels={({ datum }) => Math.floor(datum.y)}
+          labels={({ datum }) => Math.round(datum.y)}
           animate={{
             duration: 2000,
             onLoad: { duration: 1000 }
@@ -178,11 +178,11 @@ export const PieChart: React.FC<ChartProps> = ({
   color = "#c43a31",
   backgroundColor = "#ffffff"
 }) => {
-  const total = data.reduce((sum, point) => sum + point.data, 0);
+  const total = Math.round(data.reduce((sum, point) => sum + point.data, 0) * 1000) / 1000;
   const transformedData = data.map((point) => ({
     x: point.key,
-    y: point.data,
-    label: `${point.key}\n${((point.data / total) * 100).toFixed(1)}%`
+    y: Math.round(point.data * 1000) / 1000,
+    label: `${point.key}\n${Math.round((point.data / total) * 1000) / 10}%`
   }));
 
   const colorScale = data.map((_, i) => {

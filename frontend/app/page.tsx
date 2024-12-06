@@ -14,14 +14,12 @@ import {
 import { z } from "zod";
 import { RenderControls } from "../components/RenderControls";
 import InfographicsGenerator from "./components/InfographicsGenerator";
-import { LayoutOne } from "../remotion/Video/layout/LayoutOne";
-import { LayoutTwo } from "../remotion/Video/layout/LayoutTwo";
-import { LayoutThree } from "../remotion/Video/layout/LayoutThree";
-import { LayoutFour } from "../remotion/Video/layout/LayoutFour";
+import { LayoutComponentMap } from "../remotion/Video/utils/mappings";
 import StyleOptions from "./components/StyleOptions";
+import { ChartType, LayoutType } from "../remotion/Video/utils/mappings";
 
 const Home: NextPage = () => {
-  const [text, setText] = useState<string>("");
+  const [text, setText] = useState<string>(defaultVideoProps.title.text);
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [styles, setStyles] = useState({
     titleColor: "#E5E7EB",
@@ -35,19 +33,24 @@ const Home: NextPage = () => {
     if (!apiResponse) {
       return {
         title: {
-          text: "Welcome to Chanim",
+          text: text,
           animation: "slide-up",
-          color: "#E5E7EB",
-          font: "Inter",
+          color: styles.titleColor,
+          font: styles.titleFont,
         },
-        backgroundColor: "#111827",
-        chart_type: "line",
-        data: [
-          { x: "2023", y: 100 },
-          { x: "2024", y: 120 },
-        ],
-        asset: "image",
-        arrangement: "horizontal",
+        backgroundColor: styles.backgroundColor,
+        chart: {
+          data: [
+            { key: "A", data: 10 },
+            { key: "B", data: 25 },
+            { key: "C", data: 15 },
+          ],
+          color: styles.chartColor,
+          backgroundColor: styles.chartBackground,
+          chartType: ChartType.BAR,
+        },
+        asset: "rocket.svg",
+        arrangement: LayoutType.LEFT_CHART_RIGHT_TEXT,
         insights: [
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
@@ -65,13 +68,13 @@ const Home: NextPage = () => {
       },
       backgroundColor: styles.backgroundColor,
       chart: {
-        data: apiResponse.data.map((item: any) => ({
-          key: item.key,
-          data: item.value
-        })),
+        data: apiResponse.data,
         color: styles.chartColor,
         backgroundColor: styles.chartBackground,
+        chartType: apiResponse.chart_type,
       },
+      asset: apiResponse.asset,
+      arrangement: apiResponse.arrangement,
       insights: apiResponse.insights,
     };
   }, [text, styles, apiResponse]);
@@ -86,7 +89,7 @@ const Home: NextPage = () => {
         <div className="flex-1 p-8">
           <div className="h-full overflow-hidden rounded-geist shadow-[0_0_200px_rgba(0,0,0,0.15)]">
             <Player
-              component={LayoutOne}
+              component={LayoutComponentMap[inputProps.arrangement]}
               inputProps={inputProps}
               durationInFrames={DURATION_IN_FRAMES}
               fps={VIDEO_FPS}
