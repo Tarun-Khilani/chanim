@@ -1,14 +1,30 @@
 'use client';
 
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
-import { generateFromTextInfographic, generateFromFileInfographic, renderVideo } from '../services/api';
+import { 
+  generateFromTextInfographic, 
+  generateFromFileInfographic, 
+  generateStoryFromTextInfographic,
+  generateStoryFromFileInfographic,
+  renderVideo 
+} from '../services/api';
 
 interface InfographicsGeneratorProps {
   onApiResponse?: (response: any) => void;
   inputProps?: any;
+  isStoryMode?: boolean;
 }
 
-export default function InfographicsGenerator({ onApiResponse, inputProps }: InfographicsGeneratorProps) {
+interface InfographicResponse {
+  infographics?: any[];
+  // Add other properties as needed
+}
+
+export default function InfographicsGenerator({ 
+  onApiResponse, 
+  inputProps,
+  isStoryMode = false 
+}: InfographicsGeneratorProps) {
   const [text, setText] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,9 +43,12 @@ export default function InfographicsGenerator({ onApiResponse, inputProps }: Inf
     setError(null);
 
     try {
-      const response = await generateFromTextInfographic(text);
+      const response: InfographicResponse = isStoryMode 
+        ? await generateStoryFromTextInfographic(text)
+        : await generateFromTextInfographic(text);
+      
       if (onApiResponse) {
-        onApiResponse(response);
+        onApiResponse(isStoryMode && response.infographics ? response.infographics : [response]);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -45,9 +64,12 @@ export default function InfographicsGenerator({ onApiResponse, inputProps }: Inf
     setError(null);
 
     try {
-      const response = await generateFromFileInfographic(file);
+      const response: InfographicResponse = isStoryMode
+        ? await generateStoryFromFileInfographic(file)
+        : await generateFromFileInfographic(file);
+      
       if (onApiResponse) {
-        onApiResponse(response);
+        onApiResponse(isStoryMode && response.infographics ? response.infographics : [response]);
       }
       setFileMessage('File uploaded and processed successfully.');
     } catch (err) {

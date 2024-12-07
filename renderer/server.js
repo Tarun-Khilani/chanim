@@ -24,6 +24,14 @@ app.use(express.json());
 const bundleLocation = await bundle({
   entryPoint: path.resolve(__dirname, '../frontend/remotion/index.ts'),
   webpackOverride: (config) => {
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        ...config.resolve?.fallback,
+        fs: false,
+        path: false,
+      },
+    };
     return enableTailwind(config);
   },
 });
@@ -31,24 +39,32 @@ const bundleLocation = await bundle({
 app.post('/render', async (req, res) => {
   try {
     const inputProps = req.body;
+    const sequences = inputProps.sequences || [inputProps];
     const compositionId = 'Video';
     const outputFileName = `video_${Date.now()}.mp4`;
     const outputPath = path.join(__dirname, 'out', outputFileName);
 
-    // Select composition
+    // Calculate duration based on number of sequences
+    const DURATION_IN_FRAMES = 210; // Same as in frontend constants
+    const totalDuration = sequences.length * DURATION_IN_FRAMES;
+
+    // First get the composition configuration
     const composition = await selectComposition({
       serveUrl: bundleLocation,
       id: compositionId,
-      inputProps,
+      inputProps: { sequences },
     });
 
-    // Render video
+    // Then update the composition with the correct duration
+    composition.durationInFrames = totalDuration;
+
+    // Render video with sequences
     await renderMedia({
       composition,
       serveUrl: bundleLocation,
       codec: 'h264',
       outputLocation: outputPath,
-      inputProps,
+      inputProps: { sequences },
     });
 
     // Send file as download

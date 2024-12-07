@@ -1,6 +1,6 @@
 import React from 'react';
 import { spring, useCurrentFrame, useVideoConfig, interpolate } from 'remotion';
-import { AbsoluteFill, Img, staticFile } from 'remotion';
+import { Img, staticFile } from 'remotion';
 
 interface RadiatingAssetProps {
   assetName: string;
