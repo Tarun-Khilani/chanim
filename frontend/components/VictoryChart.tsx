@@ -12,8 +12,9 @@ import {
   VictoryStack,
   VictoryGroup,
   VictoryLegend,
+  VictoryLabel
 } from 'victory';
-import { VIDEO_FPS } from '../types/constants';
+import { VIDEO_FPS, DURATION_IN_FRAMES } from '../types/constants';
 
 interface DataPoint {
   key: string;
@@ -29,7 +30,7 @@ interface ChartProps {
   data: DataPoint[];
   width?: number;
   height?: number;
-  color?: string;
+  colors?: string[];
   backgroundColor?: string;
   startFrame?: number;
 }
@@ -47,21 +48,14 @@ export const LineChart: React.FC<ChartProps> = ({
   data, 
   width = 600, 
   height = 400,
-  color = "#c43a31",
+  colors = ["#10B981"],
   backgroundColor = "#ffffff",
   startFrame = VIDEO_FPS
 }) => {
+  const chartColor = Array.isArray(colors) ? colors[0] : colors;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   
-  const progress = spring({
-    frame: frame - startFrame,
-    fps,
-    config: {
-      damping: 200,
-    },
-  });
-
   const { transformedData, maxY } = useMemo(() => {
     const transformed = data.map((point) => ({
       x: point.key,
@@ -71,10 +65,29 @@ export const LineChart: React.FC<ChartProps> = ({
     return { transformedData: transformed, maxY: max };
   }, [data]);
 
-  const animatedData = transformedData.map((point) => ({
-    x: point.x,
-    y: interpolate(progress, [0, 1], [0, point.y])
-  }));
+  const animatedData = transformedData.map((point, index) => {
+    // Stagger the animation for each point
+    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    
+    // Create a separate progress for each point
+    const pointProgress = spring({
+      frame: frame - pointStartFrame,
+      fps,
+      config: {
+        damping: 200,
+      },
+    });
+
+    return {
+      x: point.x,
+      y: interpolate(
+        pointProgress, 
+        [0, 1], 
+        [0, point.y],
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+      )
+    };
+  });
 
   return (
     <div style={{ backgroundColor, padding: "20px" }}>
@@ -88,18 +101,18 @@ export const LineChart: React.FC<ChartProps> = ({
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: color, opacity: 0.3 },
-            grid: { stroke: color, opacity: 0.1 },
-            tickLabels: { fill: color, opacity: 0.7 * progress, fontSize: 12 }
+            axis: { stroke: chartColor, opacity: 0.3 },
+            grid: { stroke: chartColor, opacity: 0.1 },
+            tickLabels: { fill: chartColor, opacity: 0.7, fontSize: 12 }
           }}
         />
         <VictoryAxis
           style={{
-            axis: { stroke: color, opacity: 0.3 },
-            grid: { stroke: color, opacity: 0.1 },
+            axis: { stroke: chartColor, opacity: 0.3 },
+            grid: { stroke: chartColor, opacity: 0.1 },
             tickLabels: { 
-              fill: color, 
-              opacity: 0.7 * progress, 
+              fill: chartColor, 
+              opacity: 0.7, 
               fontSize: 12,
               angle: -30,
               textAnchor: 'end'
@@ -111,8 +124,12 @@ export const LineChart: React.FC<ChartProps> = ({
           data={animatedData}
           style={{
             data: { 
-              fill: color,
-              opacity: 0.1 * progress
+              fill: chartColor,
+              opacity: spring({
+                frame: frame - startFrame,
+                fps,
+                config: { damping: 200 }
+              }) * 0.1
             }
           }}
         />
@@ -120,9 +137,17 @@ export const LineChart: React.FC<ChartProps> = ({
         <VictoryLine
           style={{
             data: { 
-              stroke: color,
+              stroke: chartColor,
               strokeWidth: 3,
-              opacity: progress
+              opacity: transformedData.map((_, index) => {
+                const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                const pointProgress = spring({
+                  frame: frame - pointStartFrame,
+                  fps,
+                  config: { damping: 200 }
+                });
+                return pointProgress;
+              })
             }
           }}
           data={animatedData}
@@ -137,34 +162,47 @@ export const BarChart: React.FC<ChartProps> = ({
   data,
   width = 600,
   height = 400,
-  color = "#c43a31",
+  colors = ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
   backgroundColor = "#ffffff",
   startFrame = VIDEO_FPS
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   
-  const progress = spring({
-    frame: frame - startFrame,
-    fps,
-    config: {
-      damping: 200,
-    },
-  });
-
   const { transformedData, maxY } = useMemo(() => {
-    const transformed = data.map((point) => ({
+    const transformed = data.map((point, index) => ({
       x: point.key,
-      y: point.data
+      y: point.data,
+      fill: colors[index % colors.length],
     }));
     const max = Math.max(...data.map(d => d.data)) * 1.2;
     return { transformedData: transformed, maxY: max };
   }, [data]);
 
-  const animatedData = transformedData.map((point) => ({
-    x: point.x,
-    y: interpolate(progress, [0, 1], [0, point.y])
-  }));
+  const animatedData = transformedData.map((point, index) => {
+    // Stagger the animation for each bar
+    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    
+    // Create a separate progress for each bar
+    const pointProgress = spring({
+      frame: frame - pointStartFrame,
+      fps,
+      config: {
+        damping: 200,
+      },
+    });
+
+    return {
+      x: point.x,
+      y: interpolate(
+        pointProgress, 
+        [0, 1], 
+        [0, point.y],
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+      ),
+      fill: point.fill
+    };
+  });
 
   return (
     <div style={{ backgroundColor, padding: "20px" }}>
@@ -179,16 +217,16 @@ export const BarChart: React.FC<ChartProps> = ({
         <VictoryAxis
           dependentAxis
           style={{
-            axis: { stroke: color, opacity: 0.3 },
-            grid: { stroke: color, opacity: 0.1 },
-            tickLabels: { fill: color, opacity: 0.7 * progress, fontSize: 12 }
+            axis: { stroke: colors[0], opacity: 0.3 },
+            grid: { stroke: colors[0], opacity: 0.1 },
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 12 }
           }}
         />
         <VictoryAxis
           style={{
-            axis: { stroke: color, opacity: 0.3 },
-            grid: { stroke: color, opacity: 0.1 },
-            tickLabels: { fill: color, opacity: 0.7 * progress, fontSize: 14 }
+            axis: { stroke: colors[0], opacity: 0.3 },
+            grid: { stroke: colors[0], opacity: 0.1 },
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 14 }
           }}
         />
         
@@ -196,11 +234,18 @@ export const BarChart: React.FC<ChartProps> = ({
           data={animatedData}
           style={{
             data: { 
-              fill: color,
-              opacity: 0.8 * progress
+              fill: ({ datum }) => datum.fill,
+              opacity: transformedData.map((_, index) => {
+                const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                const pointProgress = spring({
+                  frame: frame - pointStartFrame,
+                  fps,
+                  config: { damping: 200 }
+                });
+                return pointProgress * 0.8;
+              })
             }
           }}
-          cornerRadius={{ top: 8 }}
         />
       </VictoryChart>
     </div>
@@ -211,7 +256,7 @@ export const PieChart: React.FC<ChartProps> = ({
   data,
   width = 400,
   height = 400,
-  color = "#c43a31",
+  colors = ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
   backgroundColor = "#ffffff",
   startFrame = VIDEO_FPS
 }) => {
@@ -228,19 +273,20 @@ export const PieChart: React.FC<ChartProps> = ({
 
   const { transformedData, colorScale } = useMemo(() => {
     const total = Math.round(data.reduce((sum, point) => sum + point.data, 0) * 1000) / 1000;
-    const transformed = data.map((point) => ({
+    const transformed = data.map((point, index) => ({
       x: point.key,
       y: Math.round(point.data * 1000) / 1000,
-      label: `${point.key}\n${Math.round((point.data / total) * 1000) / 10}%`
+      label: `${point.key}\n${Math.round((point.data / total) * 1000) / 10}%`,
+      fill: colors[index % colors.length]
     }));
     
-    const colors = data.map((_, i) => {
+    const colorsScale = data.map((_, i) => {
       const opacity = 1 - (i * 0.2);
-      return color.replace(')', `, ${opacity})`).replace('rgb', 'rgba');
+      return colors[i % colors.length].replace(')', `, ${opacity})`).replace('rgb', 'rgba');
     });
 
-    return { transformedData: transformed, colorScale: colors };
-  }, [data, color]);
+    return { transformedData: transformed, colorScale: colorsScale };
+  }, [data, colors[0]]);
 
   const animatedData = transformedData.map((point) => ({
     ...point,
@@ -260,7 +306,7 @@ export const PieChart: React.FC<ChartProps> = ({
         colorScale={colorScale}
         style={{
           labels: { 
-            fill: color,
+            fill: colors[0],
             fontSize: 14,
             opacity: progress
           }
@@ -284,43 +330,75 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
   data,
   width = 600,
   height = 400,
-  colors = ["#c43a31", "#2196f3", "#4caf50", "#ff9800"],
+  colors = ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
   backgroundColor = "#ffffff",
   startFrame = VIDEO_FPS
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   
-  const progress = spring({
-    frame: frame - startFrame,
-    fps,
-    config: {
-      damping: 200,
-    },
-  });
+  const { transformedData, maxY, seriesKeys } = useMemo(() => {
+    const keys = Object.keys(data[0].values);
+    
+    const transformed = data.map((point) => {
+      const stackedPoint: { [key: string]: number } = { x: point.key };
+      let currentHeight = 0;
+      
+      keys.forEach((series) => {
+        const value = point.values[series] || 0;
+        stackedPoint[series] = value;
+        currentHeight += value;
+      });
+      
+      return { 
+        x: point.key, 
+        ...stackedPoint,
+        total: currentHeight
+      };
+    });
 
-  const { series, transformedData, maxY } = useMemo(() => {
-    const seriesNames = Object.keys(data[0].values);
-    const transformed = seriesNames.map(seriesName => 
-      data.map(point => ({
-        x: point.key,
-        y: point.values[seriesName]
-      }))
-    );
-    const max = data.reduce((max, point) => {
-      const sum = Object.values(point.values).reduce((a, b) => a + b, 0);
-      return Math.max(max, sum);
-    }, 0) * 1.2;
+    const max = Math.max(...transformed.map(d => d.total)) * 1.2;
 
-    return { series: seriesNames, transformedData: transformed, maxY: max };
+    return { 
+      transformedData: transformed, 
+      maxY: max, 
+      seriesKeys: keys 
+    };
   }, [data]);
 
-  const animatedData = transformedData.map((seriesData) => 
-    seriesData.map((point) => ({
-      x: point.x,
-      y: interpolate(progress, [0, 1], [0, point.y])
-    }))
-  );
+  const animatedData = transformedData.map((point, index) => {
+    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    
+    const pointProgress = spring({
+      frame: frame - pointStartFrame,
+      fps,
+      config: {
+        damping: 200,
+      },
+    });
+
+    const interpolatedPoint: { [key: string]: number } = { x: point.x };
+    seriesKeys.forEach(series => {
+      interpolatedPoint[series] = interpolate(
+        pointProgress, 
+        [0, 1], 
+        [0, point[series]],
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+      );
+    });
+
+    return interpolatedPoint;
+  });
+
+  const labelOpacity = transformedData.map((_, index) => {
+    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    const pointProgress = spring({
+      frame: frame - pointStartFrame,
+      fps,
+      config: { damping: 200 }
+    });
+    return pointProgress;
+  });
 
   return (
     <div style={{ backgroundColor, padding: "20px" }}>
@@ -329,51 +407,80 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
-        domainPadding={{ x: 60 }}
+        domainPadding={{ x: 50 }}
         containerComponent={<VictoryContainer responsive={false} />}
       >
         <VictoryLegend
-          x={width - 150}
-          y={20}
-          orientation="vertical"
+          x={width /2}
+          y={10}
+          orientation="horizontal"
           gutter={20}
           style={{ 
             labels: { fill: colors[0], fontSize: 12 }
           }}
-          data={series.map((seriesName, i) => ({
+          data={seriesKeys.map((seriesName, i) => ({
             name: seriesName,
             symbol: { fill: colors[i % colors.length] }
           }))}
         />
+        
         <VictoryAxis
           dependentAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
-            tickLabels: { fill: colors[0], opacity: 0.7 * progress, fontSize: 12 }
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 12 }
           }}
         />
         <VictoryAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
-            tickLabels: { fill: colors[0], opacity: 0.7 * progress, fontSize: 14 }
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 14 }
           }}
         />
         
         <VictoryStack
-          colorScale={colors}
+          style={{
+            data: { 
+              strokeWidth: 0,
+              stroke: backgroundColor
+            }
+          }}
         >
-          {animatedData.map((seriesData, index) => (
+          {seriesKeys.map((series, seriesIndex) => (
             <VictoryBar
-              key={index}
-              data={seriesData}
+              key={series}
+              data={animatedData}
+              x="x"
+              y={series}
+              labels={({ datum }) => {
+                const value = datum[series];
+                return value > 0 ? Math.round(value) : '';
+              }}
+              labelComponent={
+                <VictoryLabel
+                  style={[{
+                    fill: colors[0],
+                    fontSize: 10,
+                    opacity: labelOpacity
+                  }]}
+                />
+              }
               style={{
                 data: { 
-                  opacity: 0.8 * progress
+                  fill: colors[seriesIndex % colors.length],
+                  opacity: transformedData.map((_, index) => {
+                    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                    const pointProgress = spring({
+                      frame: frame - pointStartFrame,
+                      fps,
+                      config: { damping: 200 }
+                    });
+                    return pointProgress * 0.8;
+                  })
                 }
               }}
-              cornerRadius={index === animatedData.length - 1 ? { top: 8 } : 0}
             />
           ))}
         </VictoryStack>
@@ -386,97 +493,151 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
   data,
   width = 600,
   height = 400,
-  colors = ["#c43a31", "#2196f3", "#4caf50", "#ff9800"],
+  colors = ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
   backgroundColor = "#ffffff",
   startFrame = VIDEO_FPS
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  
-  const progress = spring({
-    frame: frame - startFrame,
-    fps,
-    config: {
-      damping: 200,
-    },
-  });
 
-  const { series, transformedData, maxY } = useMemo(() => {
-    const seriesNames = Object.keys(data[0].values);
-    const transformed = seriesNames.map(seriesName => 
-      data.map(point => ({
-        x: point.key,
-        y: point.values[seriesName]
-      }))
-    );
-    const max = data.reduce((max, point) => {
-      const highest = Math.max(...Object.values(point.values));
-      return Math.max(max, highest);
-    }, 0) * 1.2;
+  // Validate and prepare data
+  if (!data || data.length === 0) {
+    return null;
+  }
 
-    return { series: seriesNames, transformedData: transformed, maxY: max };
-  }, [data]);
+  // Extract series keys
+  const seriesKeys = Object.keys(data[0].values);
 
-  const animatedData = transformedData.map((seriesData) => 
-    seriesData.map((point) => ({
-      x: point.x,
-      y: interpolate(progress, [0, 1], [0, point.y])
+  // Prepare data for rendering
+  const chartData = seriesKeys.map((series, seriesIndex) => 
+    data.map((point, index) => ({
+      x: point.key,
+      y: point.values[series] || 0,
+      fill: colors[seriesIndex % colors.length],
+      index
     }))
   );
 
+  // Calculate max Y value
+  const maxY = Math.max(
+    ...data.map(point => 
+      Object.values(point.values).reduce((a, b) => Math.max(a, b), 0)
+    )
+  ) * 1.2;
+
   return (
-    <div style={{ backgroundColor, padding: "10px" }}>
+    <div style={{ backgroundColor, padding: "20px" }}>
       <VictoryChart
         theme={VictoryTheme.material}
         width={width}
         height={height}
         domain={{ y: [0, maxY] }}
-        domainPadding={{ x: 60 }}
+        domainPadding={{ x: 50 }}
         containerComponent={<VictoryContainer responsive={false} />}
       >
         <VictoryLegend
-          x={width - 150}
-          y={20}
-          orientation="vertical"
+          x={width / 2}
+          y={10}
+          orientation="horizontal"
           gutter={20}
           style={{ 
             labels: { fill: colors[0], fontSize: 12 }
           }}
-          data={series.map((seriesName, i) => ({
+          data={seriesKeys.map((seriesName, i) => ({
             name: seriesName,
             symbol: { fill: colors[i % colors.length] }
           }))}
         />
+        
         <VictoryAxis
           dependentAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
-            tickLabels: { fill: colors[0], opacity: 0.7 * progress, fontSize: 12 }
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 12 }
           }}
         />
         <VictoryAxis
           style={{
             axis: { stroke: colors[0], opacity: 0.3 },
             grid: { stroke: colors[0], opacity: 0.1 },
-            tickLabels: { fill: colors[0], opacity: 0.7 * progress, fontSize: 14 }
+            tickLabels: { fill: colors[0], opacity: 0.7, fontSize: 14 }
           }}
         />
         
         <VictoryGroup
-          offset={15}
-          colorScale={colors}
+          offset={20}
+          style={{
+            data: { 
+              strokeWidth: 0,
+              stroke: backgroundColor
+            }
+          }}
         >
-          {animatedData.map((seriesData, index) => (
+          {chartData.map((seriesData, seriesIndex) => (
             <VictoryBar
-              key={index}
-              data={seriesData}
+              key={seriesKeys[seriesIndex]}
+              data={seriesData.map(point => {
+                // Calculate individual point progress with staggered start
+                const pointStartFrame = startFrame + 
+                  point.index * (DURATION_IN_FRAMES / (data.length));
+                
+                const pointProgress = spring({
+                  frame: frame - pointStartFrame,
+                  fps,
+                  config: { damping: 200 }
+                });
+
+                return {
+                  x: point.x,
+                  y: interpolate(
+                    pointProgress, 
+                    [0, 1], 
+                    [0, point.y],
+                    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+                  )
+                };
+              })}
               style={{
                 data: { 
-                  opacity: 0.8 * progress
+                  fill: seriesData[0].fill,
+                  opacity: seriesData.map(point => {
+                    const pointStartFrame = startFrame + 
+                      point.index * (DURATION_IN_FRAMES / (data.length * seriesKeys.length));
+                    
+                    const pointProgress = spring({
+                      frame: frame - pointStartFrame,
+                      fps,
+                      config: { damping: 200 }
+                    });
+
+                    return pointProgress * 0.8;
+                  })
                 }
               }}
-              cornerRadius={{ top: 8 }}
+              labels={({ datum }) => 
+                datum.y > 0 ? Math.round(datum.y).toString() : ''
+              }
+              labelComponent={
+                <VictoryLabel
+                  style={{
+                    fill: colors[0],
+                    fontSize: 10,
+                    opacity: seriesData.map(point => {
+                      const pointStartFrame = startFrame + 
+                        point.index * (DURATION_IN_FRAMES / (data.length * seriesKeys.length));
+                      
+                      const pointProgress = spring({
+                        frame: frame - pointStartFrame,
+                        fps,
+                        config: { damping: 200 }
+                      });
+
+                      return pointProgress;
+                    })
+                  }}
+                />
+              }
             />
           ))}
         </VictoryGroup>

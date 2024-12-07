@@ -62,7 +62,7 @@ export const LayoutThree = ({
           <div className="w-2/5">
             <Chart 
               data={chart.data} 
-              color={chart.color} 
+              colors={chart.colors} 
               backgroundColor={chart.backgroundColor}
               chartType={chart.chartType}
             />

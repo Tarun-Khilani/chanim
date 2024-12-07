@@ -68,7 +68,7 @@ export const LayoutTwo = ({
           <div className="w-full">
             <Chart 
               data={chart.data} 
-              color={chart.color} 
+              colors={chart.colors} 
               backgroundColor={chart.backgroundColor}
               chartType={chart.chartType}
             />
