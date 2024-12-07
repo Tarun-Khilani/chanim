@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const RENDER_BASE_URL = process.env.NEXT_PUBLIC_RENDER_URL || 'http://localhost:3001';
 
 export async function generateFromText(text: string): Promise<Blob> {
   try {
@@ -144,7 +145,7 @@ export async function generateFromFileRemotion(file: File): Promise<string> {
 
 export async function renderVideo(inputProps: any): Promise<void> {
   try {
-    const response = await fetch('http://localhost:3001/render', {
+    const response = await fetch(`${RENDER_BASE_URL}/render`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
