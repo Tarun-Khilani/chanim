@@ -15,7 +15,7 @@ export interface SequenceProps {
   backgroundColor: string;
   chart: {
     data: Array<{ key: string; data: number }>;
-    color: string;
+    colors: string[];
     backgroundColor: string;
     chartType: ChartType;
   };

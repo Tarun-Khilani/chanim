@@ -16,7 +16,7 @@ export const CompositionProps = z.object({
       key: z.string(),
       data: z.number()
     })),
-    color: z.string(),
+    colors: z.array(z.string()),
     backgroundColor: z.string(),
     chartType: z.nativeEnum(ChartType).nullable(),
   }),
@@ -38,7 +38,7 @@ export const defaultVideoProps: z.infer<typeof CompositionProps> = {
       { key: "2023", data: 100 },
       { key: "2024", data: 120 },
     ],
-    color: "#E5E7EB",
+    colors: ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
     backgroundColor: "#111827",
     chartType: ChartType.LINE,
   },

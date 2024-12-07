@@ -8,14 +8,14 @@ export const chartSchema = z.object({
     key: z.string(),
     data: z.number()
   })),
-  color: z.string(),
+  colors: z.array(z.string()),
   backgroundColor: z.string(),
   chartType: z.nativeEnum(ChartType).nullable()
 });
 
 export const Chart: React.FC<z.infer<typeof chartSchema>> = ({ 
   data, 
-  color, 
+  colors, 
   backgroundColor,
   chartType
 }) => {
@@ -59,7 +59,7 @@ export const Chart: React.FC<z.infer<typeof chartSchema>> = ({
         data={data}
         width={chartWidth}
         height={chartHeight}
-        color={color}
+        colors={colors}
         backgroundColor={backgroundColor}
       />
     </div>

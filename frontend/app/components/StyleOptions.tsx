@@ -7,7 +7,7 @@ interface StyleOptionsProps {
     titleColor: string;
     titleFont: string;
     backgroundColor: string;
-    chartColor: string;
+    chartColors: string[];
     chartBackground: string;
   }) => void;
 }
@@ -26,11 +26,11 @@ export default function StyleOptions({ onStyleChange }: StyleOptionsProps) {
     titleColor: '#E5E7EB',
     titleFont: 'Inter',
     backgroundColor: '#111827',
-    chartColor: '#10B981',
+    chartColors: ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
     chartBackground: '#1F2937'
   });
 
-  const handleStyleChange = (key: keyof typeof styles, value: string) => {
+  const handleStyleChange = (key: keyof typeof styles, value: string | string[]) => {
     const newStyles = { ...styles, [key]: value };
     setStyles(newStyles);
     onStyleChange(newStyles);
@@ -106,22 +106,24 @@ export default function StyleOptions({ onStyleChange }: StyleOptionsProps) {
             </div>
           </div>
 
-          {/* Chart Color */}
+          {/* Chart Colors */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-300">Chart Color</label>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={styles.chartColor}
-                onChange={(e) => handleStyleChange('chartColor', e.target.value)}
-                className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
-              />
-              <input
-                type="text"
-                value={styles.chartColor}
-                onChange={(e) => handleStyleChange('chartColor', e.target.value)}
-                className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-              />
+            <label className="block text-sm font-medium text-gray-300">Chart Colors</label>
+            <div className="grid grid-cols-4 gap-2">
+              {styles.chartColors.map((color, index) => (
+                <div key={index} className="flex items-center">
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) => {
+                      const newColors = [...styles.chartColors];
+                      newColors[index] = e.target.value;
+                      handleStyleChange('chartColors', newColors);
+                    }}
+                    className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 

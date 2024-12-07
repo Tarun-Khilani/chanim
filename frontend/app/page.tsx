@@ -24,7 +24,7 @@ const Home: NextPage = () => {
     titleColor: "#E5E7EB",
     titleFont: "Inter",
     backgroundColor: "#111827",
-    chartColor: "#10B981",
+    chartColors: ["#10B981", "#72bc4e", "#b8b712", "#ff9800"],
     chartBackground: "#1F2937",
   });
 
@@ -44,12 +44,17 @@ const Home: NextPage = () => {
             { key: "B", data: 25 },
             { key: "C", data: 15 },
           ],
-          color: styles.chartColor,
+          // data: [ // Stacked / Grouped bar chart data
+          //   { key: "A", values: { A: 10, B: 20, C: 30, D: 40} },
+          //   { key: "B", values: { A: 10, B: 20, C: 30, D: 40} },
+          //   { key: "C", values: { A: 10, B: 20, C: 30, D: 40} },
+          // ],
+          colors: styles.chartColors,
           backgroundColor: styles.chartBackground,
-          chartType: ChartType.LINE,
+          chartType: ChartType.PIE,
         },
         asset: "rocket.svg",
-        arrangement: LayoutType.TITLE_CENTER,
+        arrangement: LayoutType.LEFT_CHART_RIGHT_TEXT,
         insights: [
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
@@ -69,7 +74,7 @@ const Home: NextPage = () => {
       backgroundColor: styles.backgroundColor,
       chart: {
         data: sequence.data,
-        color: styles.chartColor,
+        colors: styles.chartColors,
         backgroundColor: styles.chartBackground,
         chartType: sequence.chart_type,
       },
