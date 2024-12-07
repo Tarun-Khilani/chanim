@@ -7,19 +7,25 @@ import {
   VIDEO_HEIGHT,
   VIDEO_WIDTH,
 } from "../types/constants";
-import { Layout } from "./Video/layout/Layout";
+import { Sequence } from "./Video/sequence/Sequence";
 
 export const RemotionRoot: React.FC = () => {
+  const sequences = [{
+    ...defaultVideoProps
+  }];
+
   return (
     <>
       <Composition
         id={COMP_NAME}
-        component={Layout}
-        durationInFrames={DURATION_IN_FRAMES}
+        component={Sequence}
+        durationInFrames={sequences.length * DURATION_IN_FRAMES}
         fps={VIDEO_FPS}
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}
-        defaultProps={defaultVideoProps}
+        defaultProps={{
+          sequences
+        }}
       />
     </>
   );

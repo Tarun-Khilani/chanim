@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AbsoluteFill, Audio, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { CompositionProps } from "../../../types/constants";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
+import { CompositionProps, VIDEO_FPS } from "../../../types/constants";
 import React from "react";
 import { TextFade } from "../text/TextFade";
 import { TextSlide } from "../text/TextSlide";
@@ -16,9 +16,6 @@ export const LayoutOne = ({
   insights,
   asset,
 }: z.infer<typeof CompositionProps>) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
   const TextComponent = title.animation === "fade" ? TextFade : TextSlide;
   const fontFamily = fonts[title.font as keyof typeof fonts] || fonts.Inter;
 
@@ -39,13 +36,13 @@ export const LayoutOne = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor }}>
-      <AnimatedAsset assetName={asset} position="left" delay={30} scale={0.7} />
+      <AnimatedAsset assetName={asset} position="left" delay={VIDEO_FPS} scale={0.7} />
       
       <TextComponent
         direction={title.animation !== "fade" ? getSlideDirection() : "left"}
       >
         <h1
-          className="text-[70px] font-bold"
+          className="text-[60px] font-bold"
           style={{
             fontFamily,
             color: title.color,
@@ -57,7 +54,7 @@ export const LayoutOne = ({
       </TextComponent>
 
       {/* Chart Section */}
-      <AbsoluteFill style={{ top: '30%' }}>
+      <AbsoluteFill style={{ top: '35%' }}>
         <div className="flex justify-between items-start px-12">
           {/* Left side - Chart */}
           <div className="w-1/2">
@@ -71,7 +68,7 @@ export const LayoutOne = ({
         insights={insights} 
         color={title.color}
         font={fontFamily}
-        style={{ left: '50%', top: '30%', width: '50%' }}
+        style={{ left: '50%', top: '35%', width: '50%' }}
       />
       <AbsoluteFill>
         <Audio src={staticFile("audio/sunset.mp3")} />

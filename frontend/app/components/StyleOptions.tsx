@@ -52,98 +52,99 @@ export default function StyleOptions({ onStyleChange }: StyleOptionsProps) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
+      {isOpen && (
+        <div className="p-4 space-y-6">
+          {/* Title Color */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Title Color</label>
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={styles.titleColor}
+                onChange={(e) => handleStyleChange('titleColor', e.target.value)}
+                className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
+              />
+              <input
+                type="text"
+                value={styles.titleColor}
+                onChange={(e) => handleStyleChange('titleColor', e.target.value)}
+                className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
+              />
+            </div>
+          </div>
 
-      <div className={`space-y-6 p-4 ${isOpen ? 'block' : 'hidden'}`}>
-        {/* Title Color */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Title Color</label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles.titleColor}
-              onChange={(e) => handleStyleChange('titleColor', e.target.value)}
-              className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles.titleColor}
-              onChange={(e) => handleStyleChange('titleColor', e.target.value)}
-              className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-            />
+          {/* Title Font */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Title Font</label>
+            <select
+              value={styles.titleFont}
+              onChange={(e) => handleStyleChange('titleFont', e.target.value)}
+              className="w-full px-3 py-2 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
+            >
+              {fontOptions.map((font) => (
+                <option key={font} value={font}>{font}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Background Color */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Background Color</label>
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={styles.backgroundColor}
+                onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
+                className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
+              />
+              <input
+                type="text"
+                value={styles.backgroundColor}
+                onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
+                className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Chart Color */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Chart Color</label>
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={styles.chartColor}
+                onChange={(e) => handleStyleChange('chartColor', e.target.value)}
+                className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
+              />
+              <input
+                type="text"
+                value={styles.chartColor}
+                onChange={(e) => handleStyleChange('chartColor', e.target.value)}
+                className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Chart Background */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Chart Background</label>
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={styles.chartBackground}
+                onChange={(e) => handleStyleChange('chartBackground', e.target.value)}
+                className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
+              />
+              <input
+                type="text"
+                value={styles.chartBackground}
+                onChange={(e) => handleStyleChange('chartBackground', e.target.value)}
+                className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
+              />
+            </div>
           </div>
         </div>
-
-        {/* Title Font */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Title Font</label>
-          <select
-            value={styles.titleFont}
-            onChange={(e) => handleStyleChange('titleFont', e.target.value)}
-            className="w-full px-3 py-2 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-          >
-            {fontOptions.map((font) => (
-              <option key={font} value={font}>{font}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Background Color */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Background Color</label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles.backgroundColor}
-              onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
-              className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles.backgroundColor}
-              onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
-              className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Chart Color */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Chart Color</label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles.chartColor}
-              onChange={(e) => handleStyleChange('chartColor', e.target.value)}
-              className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles.chartColor}
-              onChange={(e) => handleStyleChange('chartColor', e.target.value)}
-              className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Chart Background */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-300">Chart Background</label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles.chartBackground}
-              onChange={(e) => handleStyleChange('chartBackground', e.target.value)}
-              className="w-8 h-8 rounded border border-gray-700 bg-[#1A1F27] cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles.chartBackground}
-              onChange={(e) => handleStyleChange('chartBackground', e.target.value)}
-              className="flex-1 px-3 py-1 bg-[#1A1F27] border border-gray-700 rounded text-gray-100 text-sm"
-            />
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

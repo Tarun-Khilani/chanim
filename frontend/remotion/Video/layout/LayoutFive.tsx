@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AbsoluteFill, useCurrentFrame, spring, interpolate, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, staticFile, useCurrentFrame, spring, interpolate, useVideoConfig } from "remotion";
 import { CompositionProps } from "../../../types/constants";
 import React from "react";
 import { fonts } from "../utils/fonts";
@@ -47,7 +47,7 @@ export const LayoutFive = ({
         }}
       >
         <h1
-          className="text-[70px] font-bold"
+          className="text-[60px] font-bold"
           style={{
             fontFamily,
             color: title.color,
@@ -95,6 +95,9 @@ export const LayoutFive = ({
           />
         ))}
       </div>
+      <AbsoluteFill>
+        <Audio src={staticFile("audio/sunset.mp3")} />
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
