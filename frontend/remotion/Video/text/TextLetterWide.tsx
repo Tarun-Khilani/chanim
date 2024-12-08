@@ -82,9 +82,9 @@ export const TextLetterWide: React.FC<{
                   <p
                     key={lineIndex}
                     style={{
-                      fontSize: "24px",
+                      fontSize: "28px",
                       marginBottom: lineIndex === lines.length - 1 ? 0 : "0.5rem",
-                      lineHeight: 1.4,
+                      lineHeight: 1.2,
                       color,
                       opacity: 0.9,
                       textAlign: 'center',

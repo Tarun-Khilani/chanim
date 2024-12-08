@@ -54,7 +54,7 @@ const Home: NextPage = () => {
           chartType: ChartType.PIE,
         },
         asset: "rocket.svg",
-        arrangement: LayoutType.LEFT_CHART_RIGHT_TEXT,
+        arrangement: LayoutType.TITLE_CENTER,
         insights: [
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
           "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
