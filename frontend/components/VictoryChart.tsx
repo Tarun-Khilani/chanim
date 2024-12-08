@@ -67,7 +67,7 @@ export const LineChart: React.FC<ChartProps> = ({
 
   const animatedData = transformedData.map((point, index) => {
     // Stagger the animation for each point
-    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
     
     // Create a separate progress for each point
     const pointProgress = spring({
@@ -140,7 +140,7 @@ export const LineChart: React.FC<ChartProps> = ({
               stroke: chartColor,
               strokeWidth: 3,
               opacity: transformedData.map((_, index) => {
-                const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
                 const pointProgress = spring({
                   frame: frame - pointStartFrame,
                   fps,
@@ -181,7 +181,7 @@ export const BarChart: React.FC<ChartProps> = ({
 
   const animatedData = transformedData.map((point, index) => {
     // Stagger the animation for each bar
-    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
     
     // Create a separate progress for each bar
     const pointProgress = spring({
@@ -236,7 +236,7 @@ export const BarChart: React.FC<ChartProps> = ({
             data: { 
               fill: ({ datum }) => datum.fill,
               opacity: transformedData.map((_, index) => {
-                const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
                 const pointProgress = spring({
                   frame: frame - pointStartFrame,
                   fps,
@@ -367,7 +367,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
   }, [data]);
 
   const animatedData = transformedData.map((point, index) => {
-    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
     
     const pointProgress = spring({
       frame: frame - pointStartFrame,
@@ -391,7 +391,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
   });
 
   const labelOpacity = transformedData.map((_, index) => {
-    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+    const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
     const pointProgress = spring({
       frame: frame - pointStartFrame,
       fps,
@@ -471,7 +471,7 @@ export const StackedBarChart: React.FC<MultiSeriesChartProps> = ({
                 data: { 
                   fill: colors[seriesIndex % colors.length],
                   opacity: transformedData.map((_, index) => {
-                    const pointStartFrame = startFrame + index * (DURATION_IN_FRAMES / transformedData.length);
+                    const pointStartFrame = startFrame + index * ((DURATION_IN_FRAMES - 2 * fps) / transformedData.length);
                     const pointProgress = spring({
                       frame: frame - pointStartFrame,
                       fps,
@@ -580,7 +580,7 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
               data={seriesData.map(point => {
                 // Calculate individual point progress with staggered start
                 const pointStartFrame = startFrame + 
-                  point.index * (DURATION_IN_FRAMES / (data.length));
+                  point.index * ((DURATION_IN_FRAMES - 2 * fps) / (data.length));
                 
                 const pointProgress = spring({
                   frame: frame - pointStartFrame,
@@ -603,7 +603,7 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
                   fill: seriesData[0].fill,
                   opacity: seriesData.map(point => {
                     const pointStartFrame = startFrame + 
-                      point.index * (DURATION_IN_FRAMES / (data.length * seriesKeys.length));
+                      point.index * ((DURATION_IN_FRAMES - 2 * fps) / (data.length * seriesKeys.length));
                     
                     const pointProgress = spring({
                       frame: frame - pointStartFrame,
@@ -625,7 +625,7 @@ export const GroupedBarChart: React.FC<MultiSeriesChartProps> = ({
                     fontSize: 10,
                     opacity: seriesData.map(point => {
                       const pointStartFrame = startFrame + 
-                        point.index * (DURATION_IN_FRAMES / (data.length * seriesKeys.length));
+                        point.index * ((DURATION_IN_FRAMES - 2 * fps) / (data.length * seriesKeys.length));
                       
                       const pointProgress = spring({
                         frame: frame - pointStartFrame,
