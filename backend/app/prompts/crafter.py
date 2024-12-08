@@ -38,6 +38,7 @@ Insights provided as input which can be either Text or Table. For example:
 5. Use strong language: Choose active, impactful words that engage the audience.
 6. You can use a Maximum of 6 scenes for Infographics.
 7. ONLY USE THE AVAILABLE SVG ASSETS.
+8. Use key-data format for BAR, PIE, and LINE charts. Use key-values format for GROUPED_BAR and GROUPED_COLUMN charts.
 </NOTES>
 
 <EXAMPLE JSON OUTPUT>
