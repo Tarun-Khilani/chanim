@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AbsoluteFill, useCurrentFrame, spring, interpolate, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, staticFile, useCurrentFrame, spring, interpolate, useVideoConfig } from "remotion";
 import { CompositionProps } from "../../../types/constants";
 import React from "react";
 import { fonts } from "../utils/fonts";
@@ -30,7 +30,7 @@ export const LayoutSix = ({
     [0, fps / 2, fps],
     [1, 1.02, 1], // Reduced scale range for subtler effect
     {
-      extrapolateRight: "loop",
+      extrapolateRight: "clamp",
     }
   );
 
@@ -101,6 +101,9 @@ export const LayoutSix = ({
           />
         </div>
       </div>
+      <AbsoluteFill>
+        <Audio src={staticFile("audio/sunset.mp3")} />
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
